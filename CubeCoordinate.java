@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class CubeCoordinate {
     public final int x;
     public final int y;
@@ -10,7 +12,21 @@ public class CubeCoordinate {
         this.z = z;
     }
 
+    @Override
     public String toString() {
         return "" + x + ", " + y + ", " + z;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        CubeCoordinate that = (CubeCoordinate) obj;
+        return x == that.x && y == that.y && z == that.z;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, z);
     }
 }
