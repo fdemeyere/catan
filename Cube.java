@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class Cube {
     int x;
     int y;
@@ -21,6 +23,10 @@ public class Cube {
         this.d = d;
         this.e = e;
         this.f = f;
+
+    }
+
+    public void setNeighbours(){
 
     }
 }
