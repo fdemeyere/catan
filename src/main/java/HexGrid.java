@@ -25,8 +25,8 @@ public class HexGrid {
             "left", new CubeCoordinate(1, -1, 0)
     ));
 
-    HexGrid(int width, int height) throws Exception {
-//        if(width < 5) throw new Exception("Board width must be bigger or equal to 5");
+    HexGrid(int width, int height) {
+        if(width < 5) throw new IllegalArgumentException("Board width must be bigger or equal to 5");
 //        if(width % 2 != 1) throw new Exception("Board width must be an odd number");
 //        if(width != height) throw new Exception("Board width and height must be equal");
 
