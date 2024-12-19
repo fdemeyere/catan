@@ -1,11 +1,11 @@
 public class Edge {
-    int a;
-    int b;
+    VertexID a;
+    VertexID b;
 
     Player owner = null;
 
 //    Vertex id a, b
-    Edge(int a, int b) {
+    Edge(VertexID a, VertexID b) {
         this.a = a;
         this.b = b;
     }
