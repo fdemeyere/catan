@@ -1,5 +1,3 @@
-import java.util.List;
-
 public class Cube {
     int x;
     int y;
@@ -26,7 +24,12 @@ public class Cube {
 
     }
 
-    public void setNeighbours(){
+    @Override
+    public String toString() {
+        return "" + x + ", " + y + ", " + z;
+    }
 
+    public CubeCoordinate getCubeCoordinate() {
+        return new CubeCoordinate(x, y, z);
     }
 }

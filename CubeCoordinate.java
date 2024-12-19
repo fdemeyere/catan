@@ -29,4 +29,8 @@ public class CubeCoordinate {
     public int hashCode() {
         return Objects.hash(x, y, z);
     }
+
+    public CubeCoordinate add(CubeCoordinate coord) {
+        return new CubeCoordinate(this.x + coord.x, this.y + coord.y, this.z + coord.z);
+    }
 }
