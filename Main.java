@@ -9,6 +9,7 @@ public class Main {
 //            for(CubeCoordinate coord : grid.map.keySet()) {
 //                System.out.println(coord.toString());
 //            }
+            System.out.println(grid.edges.size());
 
 
 //            Cube current = grid.map.get(new CubeCoordinate(0, 0, 0));
@@ -18,7 +19,9 @@ public class Main {
 //            System.out.println(grid.getCube(0, 0, 0).c == grid.getCube(0, 1, -1).a);
 //            System.out.println(grid.getCube(0, 1, -1).c == grid.getCube(0, 2, -2).a);
 
-            System.out.println(grid.vertices.size());
+//            for(Vertex v : grid.vertices) {
+//                System.out.println(v.id);
+//            }
 
         }
         catch(Exception e) {

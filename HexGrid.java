@@ -5,13 +5,16 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 
-
 public class HexGrid {
 
     private Map<CubeCoordinate, Cube> map;
     int width;
 
+    int currentVertexID = 0;
+
     List<Vertex> vertices = new ArrayList<>();
+
+    List<Edge> edges = new ArrayList<>();
 
     Map<String, CubeCoordinate> vectors = new HashMap<>(Map.of(
             "topleft", new CubeCoordinate(0, -1, 1),
@@ -23,9 +26,9 @@ public class HexGrid {
     ));
 
     HexGrid(int width, int height) throws Exception {
-        if(width < 5) throw new Exception("Board width must be bigger or equal to 5");
-        if(width % 2 != 1) throw new Exception("Board width must be an odd number");
-        if(width != height) throw new Exception("Board width and height must be equal");
+//        if(width < 5) throw new Exception("Board width must be bigger or equal to 5");
+//        if(width % 2 != 1) throw new Exception("Board width must be an odd number");
+//        if(width != height) throw new Exception("Board width and height must be equal");
 
         map = new HashMap<>();
         this.width = width;
@@ -45,210 +48,75 @@ public class HexGrid {
             }
         }
 
+        for(Cube cube : map.values()) {
+            setEdges(cube);
+        }
+
 
     }
 
+    private void setEdges(Cube cube) {
+        String[] directions = {
+                "topright",
+                "right",
+                "bottomright",
+                "bottomleft",
+                "left",
+                "topleft"
+        };
+
+        Vertex[] cubeVertices = cube.getVertexArray();
+
+        Edge[] cubeEdges = {cube.e1, cube.e2, cube.e3, cube.e4, cube.e5, cube.e6};
+
+        for(int i = 0; i < 6; i++) {
+            if(cubeEdges[i] == null) {
+                Cube neighbor = map.get(cube.getCubeCoordinate().add(vectors.get(directions[i])));
+
+                Edge sharedEdge = null;
+                if(neighbor != null) {
+                    sharedEdge = getEdgeByNeighbor(neighbor, (i + 3) % 6);
+                }
+
+                if (sharedEdge == null) {
+                    sharedEdge = new Edge(cubeVertices[0].id, cubeVertices[1].id);
+                    edges.add(sharedEdge);
+                }
+
+                cubeEdges[i] = sharedEdge;
+            }
 
 
+        }
 
+        cube.e1 = cubeEdges[0];
+        cube.e2 = cubeEdges[1];
+        cube.e3 = cubeEdges[2];
+        cube.e4 = cubeEdges[3];
+        cube.e5 = cubeEdges[4];
+        cube.e6 = cubeEdges[5];
+    }
 
+    private Edge getEdgeByNeighbor(Cube neighbor, int edgeIndex) {
+        switch (edgeIndex) {
+            case 0: return neighbor.e1;
+            case 1: return neighbor.e2;
+            case 2: return neighbor.e3;
+            case 3: return neighbor.e4;
+            case 4: return neighbor.e5;
+            case 5: return neighbor.e6;
+            default: return null;
+        }
 
-
-//    private void setVertices(Cube cube) {
-//
-//
-//        //      Set a-vertex
-//        if(cube.a == null) {
-//
-//
-//            Cube topleft = map.get(cube.getCubeCoordinate().add(vectors.get("topleft")));
-//            Cube topright = map.get(cube.getCubeCoordinate().add(vectors.get("topright")));
-//
-//            Vertex sharedVertex = null;
-//            if (topleft != null && topleft.c != null) {
-//                sharedVertex = topleft.c;
-//            } else if (topright != null && topright.e != null) {
-//                sharedVertex = topright.e;
-//            } else {
-//                sharedVertex = new Vertex();
-//
-//                vertices.add(sharedVertex);
-//            }
-//
-//            cube.a = sharedVertex;
-//            sharedVertex.addCube(cube);
-//
-//            if (topleft != null) {
-//                topleft.c = sharedVertex;
-//                sharedVertex.addCube(topleft);
-//            }
-//            if (topright != null) {
-//                topright.e = sharedVertex;
-//                sharedVertex.addCube(topright);
-//            }
-//
-//        }
-//
-//
-//        //      Set b-vertex
-//        if(cube.b == null) {
-//            Cube topright = map.get(cube.getCubeCoordinate().add(vectors.get("topright")));
-//            Cube right = map.get(cube.getCubeCoordinate().add(vectors.get("right")));
-//
-//            Vertex sharedVertex = null;
-//            if (topright != null && topright.d != null) {
-//                sharedVertex = topright.d;
-//            } else if (right != null && right.f != null) {
-//                sharedVertex = right.f;
-//            } else {
-//                sharedVertex = new Vertex();
-//                vertices.add(sharedVertex);
-//            }
-//
-//            cube.b = sharedVertex;
-//            sharedVertex.addCube(cube);
-//
-//            if (topright != null) {
-//                topright.e = sharedVertex;
-//                sharedVertex.addCube(topright);
-//            }
-//            if (right != null) {
-//                right.f = sharedVertex;
-//                sharedVertex.addCube(right);
-//            }
-//        }
-//
-//        //      Set c-vertex
-//        if(cube.c == null) {
-//
-//
-//
-//            Cube right = map.get(cube.getCubeCoordinate().add(vectors.get("right")));
-//            Cube bottomright = map.get(cube.getCubeCoordinate().add(vectors.get("bottomright")));
-//
-//            Vertex sharedVertex = null;
-//            if (right != null && right.e != null) {
-//                sharedVertex = right.e;
-//            } else if (bottomright != null && bottomright.a != null) {
-//                sharedVertex = bottomright.a;
-//            } else {
-//                sharedVertex = new Vertex();
-//                vertices.add(sharedVertex);
-//            }
-//
-//            cube.c = sharedVertex;
-//            sharedVertex.addCube(cube);
-//
-//            if (right != null) {
-//                right.e = sharedVertex;
-//                sharedVertex.addCube(right);
-//            }
-//            if (bottomright != null) {
-//                bottomright.a = sharedVertex;
-//                sharedVertex.addCube(bottomright);
-//            }
-//        }
-//
-//        //      Set d-vertex
-//        if(cube.d == null) {
-//
-//
-//            Cube bottomright = map.get(cube.getCubeCoordinate().add(vectors.get("bottomright")));
-//            Cube bottomleft = map.get(cube.getCubeCoordinate().add(vectors.get("bottomleft")));
-//
-//            Vertex sharedVertex = null;
-//            if (bottomright != null && bottomright.f != null) {
-//                sharedVertex = bottomright.f;
-//            } else if (bottomleft != null && bottomleft.b != null) {
-//                sharedVertex = bottomleft.b;
-//            } else {
-//                sharedVertex = new Vertex();
-//                vertices.add(sharedVertex);
-//            }
-//
-//            cube.d = sharedVertex;
-//            sharedVertex.addCube(cube);
-//
-//            if (bottomright != null) {
-//                bottomright.f = sharedVertex;
-//                sharedVertex.addCube(bottomright);
-//            }
-//            if (bottomleft != null) {
-//                bottomleft.b = sharedVertex;
-//                sharedVertex.addCube(bottomleft);
-//            }
-//
-//        }
-//
-//
-//        //      Set e-vertex
-//        if(cube.e == null) {
-//
-//
-//            Cube bottomleft = map.get(cube.getCubeCoordinate().add(vectors.get("bottomleft")));
-//            Cube left = map.get(cube.getCubeCoordinate().add(vectors.get("left")));
-//
-//            Vertex sharedVertex = null;
-//            if (bottomleft != null && bottomleft.a != null) {
-//                sharedVertex = bottomleft.a;
-//            } else if (left != null && left.c != null) {
-//                sharedVertex = left.c;
-//            } else {
-//                sharedVertex = new Vertex();
-//                vertices.add(sharedVertex);
-//            }
-//
-//            cube.e = sharedVertex;
-//            sharedVertex.addCube(cube);
-//
-//            if (bottomleft != null) {
-//                bottomleft.a = sharedVertex;
-//                sharedVertex.addCube(bottomleft);
-//            }
-//            if (left != null) {
-//                left.c = sharedVertex;
-//                sharedVertex.addCube(left);
-//            }
-//        }
-//
-//        //      Set f-vertex
-//        if(cube.f == null) {
-//
-//
-//            Cube left = map.get(cube.getCubeCoordinate().add(vectors.get("left")));
-//            Cube topleft = map.get(cube.getCubeCoordinate().add(vectors.get("topleft")));
-//
-//
-//            Vertex sharedVertex = null;
-//            if (left != null && left.b != null) {
-//                sharedVertex = left.b;
-//            } else if (topleft != null && topleft.d != null) {
-//                sharedVertex = topleft.d;
-//            } else {
-//                sharedVertex = new Vertex();
-//                vertices.add(sharedVertex);
-//            }
-//
-//            cube.f = sharedVertex;
-//            sharedVertex.addCube(cube);
-//
-//            if (left != null) {
-//                left.b = sharedVertex;
-//                sharedVertex.addCube(left);
-//            }
-//            if (topleft != null) {
-//                topleft.d = sharedVertex;
-//                sharedVertex.addCube(topleft);
-//            }
-//        }
-//
-//
-//    }
+    }
 
     private void setVertices(Cube cube) {
 //        System.out.println("--------------------------------------");
 //        System.out.println("Cube coordinate: " + cube.toString());
         // Directions in which vertices can be shared
+
+
+
         String[][] directions = {
                 {"topleft", "topright"},    // For vertex 'a'
                 {"topright", "right"},      // For vertex 'b'
@@ -258,7 +126,7 @@ public class HexGrid {
                 {"left", "topleft"}         // For vertex 'f'
         };
 
-        Vertex[] cubeVertices = {cube.a, cube.b, cube.c, cube.d, cube.e, cube.f};
+        Vertex[] cubeVertices = cube.getVertexArray();
 
         for (int i = 0; i < 6; i++) {
 
@@ -282,7 +150,8 @@ public class HexGrid {
                 }
 
                 if (sharedVertex == null) {
-                    sharedVertex = new Vertex();
+                    sharedVertex = new Vertex(currentVertexID);
+                    currentVertexID++;
                     vertices.add(sharedVertex);
                 }
 

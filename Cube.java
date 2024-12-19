@@ -10,6 +10,13 @@ public class Cube {
     Vertex e;
     Vertex f;
 
+    Edge e1;
+    Edge e2;
+    Edge e3;
+    Edge e4;
+    Edge e5;
+    Edge e6;
+
     Cube(int x, int y, int z, Vertex a, Vertex b, Vertex c, Vertex d, Vertex e, Vertex f) {
         this.x = x;
         this.y = y;
@@ -31,5 +38,9 @@ public class Cube {
 
     public CubeCoordinate getCubeCoordinate() {
         return new CubeCoordinate(x, y, z);
+    }
+
+    public Vertex[] getVertexArray() {
+        return new Vertex[]{this.a, this.b, this.c, this.d, this.e, this.f};
     }
 }

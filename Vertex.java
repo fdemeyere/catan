@@ -2,14 +2,15 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Vertex {
-    List<Cube> neighbourVertices = new ArrayList<>();
+
+    int id;
 
     List<Cube> cubes = new ArrayList<>();
 
     boolean buildable = true;
 
-    Vertex(){
-
+    Vertex(int id){
+        this.id = id;
     }
 
 
