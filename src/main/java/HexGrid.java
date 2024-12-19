@@ -5,18 +5,20 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 
+import java.util.Collection;
+
 public class HexGrid {
 
-    private Map<CubeCoordinate, Cube> map;
+    private final Map<CubeCoordinate, Cube> map;
     int width;
 
     int currentVertexID = 0;
 
-    List<Vertex> vertices = new ArrayList<>();
+    private final Map<VertexID, Vertex> idToVertex;
 
     List<Edge> edges = new ArrayList<>();
 
-    Map<String, CubeCoordinate> vectors = new HashMap<>(Map.of(
+    public Map<String, CubeCoordinate> vectors = new HashMap<>(Map.of(
             "topleft", new CubeCoordinate(0, -1, 1),
             "topright", new CubeCoordinate(-1, 0, 1),
             "right", new CubeCoordinate(-1, 1, 0),
@@ -25,12 +27,12 @@ public class HexGrid {
             "left", new CubeCoordinate(1, -1, 0)
     ));
 
-    HexGrid(int width, int height) {
-        if(width < 5) throw new IllegalArgumentException("Board width must be bigger or equal to 5");
-//        if(width % 2 != 1) throw new Exception("Board width must be an odd number");
-//        if(width != height) throw new Exception("Board width and height must be equal");
-
+    HexGrid(int width, int height) throws Exception {
+        if(width < 5) throw new Exception("Board width must be bigger or equal to 5");
+        if(width % 2 != 1) throw new Exception("Board width must be an odd number");
+        if(width != height) throw new Exception("Board width and height must be equal");
         map = new HashMap<>();
+        idToVertex = new HashMap<>();
         this.width = width;
 
         for(int x = -(width - 1)/2; x <= (width - 1)/2; x++) {
@@ -111,12 +113,8 @@ public class HexGrid {
     }
 
     private void setVertices(Cube cube) {
-//        System.out.println("--------------------------------------");
-//        System.out.println("Cube coordinate: " + cube.toString());
+
         // Directions in which vertices can be shared
-
-
-
         String[][] directions = {
                 {"topleft", "topright"},    // For vertex 'a'
                 {"topright", "right"},      // For vertex 'b'
@@ -134,13 +132,6 @@ public class HexGrid {
                 Cube neighbor1 = map.get(cube.getCubeCoordinate().add(vectors.get(directions[i][0])));
                 Cube neighbor2 = map.get(cube.getCubeCoordinate().add(vectors.get(directions[i][1])));
 
-//                if(i == 0) {
-//                    System.out.println(cube.getCubeCoordinate().add(vectors.get(directions[i][0])));
-//                    System.out.println("Neighbor 1: " + (neighbor1 == null ? null : neighbor1.toString()));
-//                    System.out.println("Neighbor 2: " + (neighbor2 == null ? null : neighbor2.toString()));
-//                }
-
-
                 Vertex sharedVertex = null;
 
                 if (neighbor1 != null) {
@@ -149,14 +140,19 @@ public class HexGrid {
                     sharedVertex = getVertexByNeighbor(neighbor2, (i + 4) % 6);
                 }
 
+//                if (sharedVertex == null) {
+//                    sharedVertex = new Vertex(currentVertexID);
+//                    idToVertex.put(currentVertexID, sharedVertex);
+//                    currentVertexID++;
+//                }
+
                 if (sharedVertex == null) {
-                    sharedVertex = new Vertex(currentVertexID);
-                    currentVertexID++;
-                    vertices.add(sharedVertex);
+                    sharedVertex = new Vertex();
+                    idToVertex.put(sharedVertex.id, sharedVertex);
                 }
 
                 cubeVertices[i] = sharedVertex;
-                sharedVertex.addCube(cube);
+                sharedVertex.id.setNeighborCube(i, cube);
             }
         }
 
@@ -181,7 +177,6 @@ public class HexGrid {
 
     }
 
-
     public Cube getCube(int x, int y, int z) {
         return map.get(new CubeCoordinate(x, y, z));
     }
@@ -189,4 +184,14 @@ public class HexGrid {
     public Map<CubeCoordinate, Cube> getMap() {
         return map;
     }
+
+    public Collection<Vertex> getVertices(){
+        return idToVertex.values();
+    }
+
+    public Vertex getVertexByID(CubeCoordinate coord1, CubeCoordinate coord2, CubeCoordinate coord3) {
+        VertexID idToLookUp = new VertexID(coord1, coord2, coord3);
+        return idToVertex.get(idToLookUp);
+    }
+
 }
