@@ -1,8 +1,3 @@
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.graph.Graph;
-import com.google.common.graph.Graphs;
-import com.google.common.graph.ValueGraphBuilder;
-
 import java.util.HashMap;
 
 public class Main {
@@ -14,7 +9,11 @@ public class Main {
 //            for(CubeCoordinate coord : grid.map.keySet()) {
 //                System.out.println(coord.toString());
 //            }
+            System.out.println(grid.getVertices().size());
+            System.out.println(grid.getMap().size());
             System.out.println(grid.edges.size());
+
+            System.out.println(grid.getVertexByID(grid.vectors.get("topleft"), grid.vectors.get("topright"), new CubeCoordinate(0, 0, 0)));
 
 
 //            Cube current = grid.map.get(new CubeCoordinate(0, 0, 0));
@@ -32,6 +31,8 @@ public class Main {
         catch(Exception e) {
             System.out.println(e);
         }
+
+
 
 
     }
