@@ -4,41 +4,36 @@
     <groupId>com.mycompany.app</groupId>
     <artifactId>my-app</artifactId>
     <version>1</version>
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>RELEASE</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.8.1</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>9</source>
-                    <target>9</target>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-    <dependences>
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.11.3</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.11.3</version>
             <scope>test</scope>
         </dependency>
-    </dependences>
-
-
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.4.0-jre</version>
+        </dependency>
+    </dependencies>
 </project>
 <!-- https://mvnrepository.com/artifact/junit/junit -->
