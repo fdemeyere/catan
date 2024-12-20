@@ -1,3 +1,7 @@
+import java.util.Objects;
+import java.util.List;
+import java.util.ArrayList;
+
 public class VertexID {
 
     private CubeCoordinate[] neighborCubes = new CubeCoordinate[3];
@@ -7,21 +11,30 @@ public class VertexID {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         VertexID that = (VertexID) obj;
-        return neighborCubes[0] == that.neighborCubes[0] && neighborCubes[1] == that.neighborCubes[1] && neighborCubes[2] == that.neighborCubes[2];
+        return ((Objects.equals(neighborCubes[0], that.neighborCubes[0]))
+            && (Objects.equals(neighborCubes[1], that.neighborCubes[1]))
+            && (Objects.equals(neighborCubes[2], that.neighborCubes[2]))
+        );
     }
 
-    public void setNeighborCube(int index, Cube cube) {
-        neighborCubes[getVertex(index)] = cube.getCubeCoordinate();
+    @Override
+    public int hashCode() {
+        return Objects.hash(neighborCubes[0], neighborCubes[1], neighborCubes[2]);
     }
 
-    public void setNeighborCube(int index, CubeCoordinate coord) {
-        neighborCubes[getVertex(index)] = coord;
+
+    public void setNeighborCubeByVertexPosition(int position, Cube cube) {
+        neighborCubes[getVertex(position)] = cube.getCubeCoordinate();
+    }
+
+    public void setNeighborCubeByVertexPostion(int position, CubeCoordinate coord) {
+        neighborCubes[getVertex(position)] = coord;
     }
 
     VertexID(CubeCoordinate coord1, CubeCoordinate coord2, CubeCoordinate coord3) {
-        setNeighborCube(0, coord1);
-        setNeighborCube(1, coord2);
-        setNeighborCube(2, coord3);
+        neighborCubes[0] = coord1;
+        neighborCubes[1] = coord2;
+        neighborCubes[2] = coord3;
     }
 
     VertexID() {
@@ -43,5 +56,18 @@ public class VertexID {
                 throw new IllegalStateException("Unexpected value: " + vertexIndex);
         }
 
+    }
+
+    @Override
+    public String toString(){
+        String result = "Neighbor 0: (" +  handleCubeCoordinatesToString(0) + " )\n";
+        result += "Neighbor 1: (" +  handleCubeCoordinatesToString(1) + " )\n";
+        result += "Neighbor 2: (" +  handleCubeCoordinatesToString(2) + " )\n";
+        return result;
+    }
+
+    private String handleCubeCoordinatesToString(int index) {
+
+        return neighborCubes[index] == null ? "null" : neighborCubes[index].toString();
     }
 }

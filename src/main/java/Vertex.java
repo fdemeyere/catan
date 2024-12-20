@@ -3,16 +3,19 @@ import java.util.ArrayList;
 
 public class Vertex {
 
-    VertexID id = new VertexID();
+    VertexID id;
 
     List<Cube> cubes = new ArrayList<>();
 
     boolean buildable = true;
 
-    Vertex(){
-
+    Vertex() {
+        this.id = new VertexID();
     }
 
+    Vertex(VertexID id) {
+        this.id = id;
+    }
 
 
     public void addCube(Cube cube) {
@@ -21,5 +24,7 @@ public class Vertex {
         }
     }
 
+    public void makeIdImmutable() {
 
+    }
 }

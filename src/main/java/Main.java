@@ -9,24 +9,27 @@ public class Main {
 //            for(CubeCoordinate coord : grid.map.keySet()) {
 //                System.out.println(coord.toString());
 //            }
-            System.out.println(grid.getVertices().size());
-            System.out.println(grid.getMap().size());
-            System.out.println(grid.edges.size());
+            System.out.println("---------------------------------------");
+            System.out.println("Number of vertices: " + grid.getVertices().size());
+            System.out.println("Number of tiles: " + grid.getMap().size());
+            System.out.println("Number of edges: " + grid.getEdges().size());
 
-            System.out.println(grid.getVertexByID(grid.vectors.get("topleft"), grid.vectors.get("topright"), new CubeCoordinate(0, 0, 0)));
+            System.out.println("Number of vertexID: " + grid.idToVertex.values().size());
 
 
-//            Cube current = grid.map.get(new CubeCoordinate(0, 0, 0));
-//            System.out.println(current.toString());
-//            System.out.println(grid.getCube(0, -2, 2).c == grid.getCube(0, -1, 1).a);
-//            System.out.println(grid.getCube(0, -1, 1).c == grid.getCube(0, 0, 0).a);
-//            System.out.println(grid.getCube(0, 0, 0).c == grid.getCube(0, 1, -1).a);
-//            System.out.println(grid.getCube(0, 1, -1).c == grid.getCube(0, 2, -2).a);
-
-//            for(Vertex v : grid.vertices) {
-//                System.out.println(v.id);
-//            }
-
+            System.out.println(grid.getVertexByID(grid.vectors.get("topright"), grid.vectors.get("null"), grid.vectors.get("topleft")).id.toString());
+//            // Create some sample coordinates
+//            CubeCoordinate c1 = new CubeCoordinate(0, -1, 1);
+//            CubeCoordinate c2 = new CubeCoordinate(-1, 0, 1);
+//            CubeCoordinate c3 = new CubeCoordinate(0, 0, 0);
+//
+//            // Insert a vertex
+//            VertexID vertexID = new VertexID(c1, c2, c3);
+//            Vertex vertex = new Vertex(vertexID);
+//            grid.idToVertex.put(vertexID, vertex);
+//
+//            Vertex retrievedVertex = grid.getVertexByID(c1, c2, c3);
+//            System.out.println("Retrieved Vertex: " + retrievedVertex.id.toString());
         }
         catch(Exception e) {
             System.out.println(e);
