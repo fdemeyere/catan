@@ -1,5 +1,9 @@
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
@@ -26,6 +30,22 @@ public class Board extends JFrame {
 
             }
         };
+
+        // boardPanel.addMouseListener(new MouseAdapter() {
+        // @Override
+        // public void mouseClicked(MouseEvent e) {
+        // int x = e.getX();
+        // int y = e.getY();
+        // for (Hexagon hexagon : hexagons) {
+        // if (hexagon.isClicked(x, y)) {
+        // hexagon.toggleSelected();
+        // boardPanel.repaint();
+        // break;
+        // }
+        // }
+        // }
+        // });
+
         boardPanel.setBounds(0, 0, 850, 850);
         boardPanel.setBackground(Color.WHITE);
         add(boardPanel);
@@ -36,9 +56,9 @@ public class Board extends JFrame {
     private void drawHexagon(Cube cube, Graphics2D g2d) {
         // Draw a hexagon
 
-        int radius = 50;
-        double horizontalSpacing = radius * Math.sqrt(3) / 2; // Distance between centers horizontally
-        double verticalSpacing = radius * 1.5; // Distance between centers vertically
+        int radius = 80;
+        double horizontalSpacing = 1.15 * radius * Math.sqrt(3) / 2; // Distance between centers horizontally
+        double verticalSpacing = 1.15 * radius * 1.5; // Distance between centers vertically
 
         int centerX = (int) (400 - horizontalSpacing * cube.x + horizontalSpacing * cube.y);
         int centerY = (int) (400 - verticalSpacing * (cube.x + cube.y));
