@@ -1,4 +1,5 @@
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import java.awt.event.MouseAdapter;
@@ -25,26 +26,10 @@ public class Board extends JFrame {
                 Graphics2D g2d = (Graphics2D) g;
                 for (Cube cube : grid.getMap().values()) {
                     drawHexagon(cube, g2d);
-
                 }
 
             }
         };
-
-        // boardPanel.addMouseListener(new MouseAdapter() {
-        // @Override
-        // public void mouseClicked(MouseEvent e) {
-        // int x = e.getX();
-        // int y = e.getY();
-        // for (Hexagon hexagon : hexagons) {
-        // if (hexagon.isClicked(x, y)) {
-        // hexagon.toggleSelected();
-        // boardPanel.repaint();
-        // break;
-        // }
-        // }
-        // }
-        // });
 
         boardPanel.setBounds(0, 0, 850, 850);
         boardPanel.setBackground(Color.WHITE);
@@ -61,7 +46,7 @@ public class Board extends JFrame {
         double verticalSpacing = 1.15 * radius * 1.5; // Distance between centers vertically
 
         int centerX = (int) (400 - horizontalSpacing * cube.x + horizontalSpacing * cube.y);
-        int centerY = (int) (400 - verticalSpacing * (cube.x + cube.y));
+        int centerY = (int) (400 + verticalSpacing * (cube.x + cube.y));
 
         int[] xPoints = new int[6];
         int[] yPoints = new int[6];
@@ -75,6 +60,8 @@ public class Board extends JFrame {
 
         g2d.setColor(Color.BLACK); // Set the color for the hexagon outline
         g2d.drawPolygon(xPoints, yPoints, 6);
+
+        g2d.drawString(cube.toString(), centerX - 10, centerY + 5);
     }
 
 }
