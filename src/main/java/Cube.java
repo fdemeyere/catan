@@ -1,4 +1,6 @@
 public class Cube {
+    int RADIUS = 50;
+
     int x;
     int y;
     int z;
@@ -16,6 +18,9 @@ public class Cube {
     Edge e4;
     Edge e5;
     Edge e6;
+
+    int x2D;
+    int y2D;
 
     Cube(int x, int y, int z, Vertex a, Vertex b, Vertex c, Vertex d, Vertex e, Vertex f) {
         this.x = x;
@@ -41,6 +46,44 @@ public class Cube {
     }
 
     public Vertex[] getVertexArray() {
-        return new Vertex[]{this.a, this.b, this.c, this.d, this.e, this.f};
+        return new Vertex[] { this.a, this.b, this.c, this.d, this.e, this.f };
     }
+
+    public Boolean cubeContains2DCoord(double xClicked, double yClicked) {
+        // return coord2DLeftSide(xClicked, yClicked) && coord2DLowerHalf(xClicked,
+        // yClicked);
+        if (coord2DLeftSide(xClicked, yClicked)) {
+            if (coord2DLowerHalf(xClicked, yClicked))
+                return coord2DBottomLeft(xClicked, yClicked);
+
+        }
+        return false;
+    }
+
+    private Boolean coord2DLeftSide(double xClicked, double yClicked) {
+        double xDiff = this.x2D - xClicked;
+        if (xClicked <= this.x2D && xDiff < RADIUS * Math.sqrt(3) / 2)
+            return true;
+
+        return false;
+    }
+
+    private Boolean coord2DLowerHalf(double xClicked, double yClicked) {
+        double yDiff = yClicked - this.y2D;
+        if (yClicked >= this.y2D && yDiff < RADIUS)
+            return true;
+
+        return false;
+    }
+
+    private Boolean coord2DBottomLeft(double xClicked, double yClicked) {
+        if (!coord2DLeftSide(xClicked, yClicked) || !coord2DLowerHalf(xClicked, yClicked))
+            return false;
+        double k = ((this.RADIUS / 2) / (this.RADIUS * Math.sqrt(3) / 2));
+        double m = (this.y2D + this.RADIUS) - k * this.x2D;
+
+        return yClicked <= k * xClicked + m;
+
+    }
+
 }

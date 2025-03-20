@@ -25,37 +25,37 @@ public class HexGrid {
             "bottomright", new CubeCoordinate(0, 1, -1),
             "bottomleft", new CubeCoordinate(1, 0, -1),
             "left", new CubeCoordinate(1, -1, 0),
-            "null", new CubeCoordinate(0, 0, 0)
-    ));
+            "null", new CubeCoordinate(0, 0, 0)));
 
     HexGrid(int width, int height) throws Exception {
-        if(width < 5) throw new Exception("Board width must be bigger or equal to 5");
-        if(width % 2 != 1) throw new Exception("Board width must be an odd number");
-        if(width != height) throw new Exception("Board width and height must be equal");
+        if (width < 5)
+            throw new Exception("Board width must be bigger or equal to 5");
+        if (width % 2 != 1)
+            throw new Exception("Board width must be an odd number");
+        if (width != height)
+            throw new Exception("Board width and height must be equal");
 
         this.map = new HashMap<>();
         this.idToVertex = new HashMap<>();
         this.width = width;
 
-        for(int x = -(width - 1)/2; x <= (width - 1)/2; x++) {
-            for(int y = -(width - 1)/2; y <= (width - 1)/2; y++) {
+        for (int x = -(width - 1) / 2; x <= (width - 1) / 2; x++) {
+            for (int y = -(width - 1) / 2; y <= (width - 1) / 2; y++) {
                 int z = -x - y;
 
-                if(Math.abs(z) <= (width - 1)/2) {
+                if (Math.abs(z) <= (width - 1) / 2) {
                     Cube newCube = new Cube(x, y, z, null, null, null, null, null, null);
                     this.map.put(new CubeCoordinate(x, y, z), newCube);
                     this.setVertices(newCube);
 
                 }
 
-
             }
         }
 
-        for(Cube cube : map.values()) {
+        for (Cube cube : map.values()) {
             this.setEdges(cube);
         }
-
 
     }
 
@@ -71,14 +71,14 @@ public class HexGrid {
 
         Vertex[] cubeVertices = cube.getVertexArray();
 
-        Edge[] cubeEdges = {cube.e1, cube.e2, cube.e3, cube.e4, cube.e5, cube.e6};
+        Edge[] cubeEdges = { cube.e1, cube.e2, cube.e3, cube.e4, cube.e5, cube.e6 };
 
-        for(int i = 0; i < 6; i++) {
-            if(cubeEdges[i] == null) {
+        for (int i = 0; i < 6; i++) {
+            if (cubeEdges[i] == null) {
                 Cube neighbor = map.get(cube.getCubeCoordinate().add(vectors.get(directions[i])));
 
                 Edge sharedEdge = null;
-                if(neighbor != null) {
+                if (neighbor != null) {
                     sharedEdge = getEdgeByNeighbor(neighbor, (i + 3) % 6);
                 }
 
@@ -89,7 +89,6 @@ public class HexGrid {
 
                 cubeEdges[i] = sharedEdge;
             }
-
 
         }
 
@@ -103,13 +102,20 @@ public class HexGrid {
 
     private Edge getEdgeByNeighbor(Cube neighbor, int edgeIndex) {
         switch (edgeIndex) {
-            case 0: return neighbor.e1;
-            case 1: return neighbor.e2;
-            case 2: return neighbor.e3;
-            case 3: return neighbor.e4;
-            case 4: return neighbor.e5;
-            case 5: return neighbor.e6;
-            default: return null;
+            case 0:
+                return neighbor.e1;
+            case 1:
+                return neighbor.e2;
+            case 2:
+                return neighbor.e3;
+            case 3:
+                return neighbor.e4;
+            case 4:
+                return neighbor.e5;
+            case 5:
+                return neighbor.e6;
+            default:
+                return null;
         }
 
     }
@@ -118,12 +124,12 @@ public class HexGrid {
 
         // Directions in which vertices can be shared
         String[][] directions = {
-                {"topleft", "topright"},    // For vertex 'a'
-                {"topright", "right"},      // For vertex 'b'
-                {"right", "bottomright"},   // For vertex 'c'
-                {"bottomright", "bottomleft"}, // For vertex 'd'
-                {"bottomleft", "left"},     // For vertex 'e'
-                {"left", "topleft"}         // For vertex 'f'
+                { "topleft", "topright" }, // For vertex 'a'
+                { "topright", "right" }, // For vertex 'b'
+                { "right", "bottomright" }, // For vertex 'c'
+                { "bottomright", "bottomleft" }, // For vertex 'd'
+                { "bottomleft", "left" }, // For vertex 'e'
+                { "left", "topleft" } // For vertex 'f'
         };
 
         Vertex[] cubeVertices = cube.getVertexArray();
@@ -142,30 +148,26 @@ public class HexGrid {
                     sharedVertex = getVertexByNeighbor(neighbor2, (i + 4) % 6);
                 }
 
-//                if (sharedVertex == null) {
-//                    sharedVertex = new Vertex(currentVertexID);
-//                    idToVertex.put(currentVertexID, sharedVertex);
-//                    currentVertexID++;
-//                }
+                // if (sharedVertex == null) {
+                // sharedVertex = new Vertex(currentVertexID);
+                // idToVertex.put(currentVertexID, sharedVertex);
+                // currentVertexID++;
+                // }
 
                 if (sharedVertex == null) {
                     sharedVertex = new Vertex();
-//                    idToVertex.put(sharedVertex.id, sharedVertex);
+                    // idToVertex.put(sharedVertex.id, sharedVertex);
 
                     vertices.add(sharedVertex);
-
-
 
                 }
 
                 cubeVertices[i] = sharedVertex;
                 sharedVertex.id.setNeighborCubeByVertexPosition(i, cube);
 
-
-
-//                System.out.println("----------------------------------------------------");
-//                System.out.println("Current vertex position: " + i);
-//                System.out.println(sharedVertex.id);
+                // System.out.println("----------------------------------------------------");
+                // System.out.println("Current vertex position: " + i);
+                // System.out.println(sharedVertex.id);
             }
         }
 
@@ -176,25 +178,30 @@ public class HexGrid {
         cube.e = cubeVertices[4];
         cube.f = cubeVertices[5];
 
-        for(Vertex vertex : vertices) {
+        for (Vertex vertex : vertices) {
             idToVertex.put(vertex.id, vertex);
         }
     }
 
     private Vertex getVertexByNeighbor(Cube neighbor, int vertexIndex) {
         switch (vertexIndex) {
-            case 0: return neighbor.a;
-            case 1: return neighbor.b;
-            case 2: return neighbor.c;
-            case 3: return neighbor.d;
-            case 4: return neighbor.e;
-            case 5: return neighbor.f;
-            default: return null;
+            case 0:
+                return neighbor.a;
+            case 1:
+                return neighbor.b;
+            case 2:
+                return neighbor.c;
+            case 3:
+                return neighbor.d;
+            case 4:
+                return neighbor.e;
+            case 5:
+                return neighbor.f;
+            default:
+                return null;
         }
 
     }
-
-
 
     public Cube getCube(int x, int y, int z) {
         return map.get(new CubeCoordinate(x, y, z));
@@ -204,7 +211,7 @@ public class HexGrid {
         return map;
     }
 
-    public Collection<Vertex> getVertices(){
+    public Collection<Vertex> getVertices() {
         return idToVertex.values();
     }
 
@@ -214,9 +221,8 @@ public class HexGrid {
         return idToVertex.get(idToLookUp);
     }
 
-    public List<Edge> getEdges(){
+    public List<Edge> getEdges() {
         return edges;
     }
-
 
 }
