@@ -9,6 +9,10 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Point;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
+
 public class Board extends JFrame implements MouseListener {
 
     HexGrid grid;
@@ -21,26 +25,57 @@ public class Board extends JFrame implements MouseListener {
 
     Cube robberPlacement = null;
 
+    Color lumberColor = new Color(63, 125, 88);
+    Color woolColor = new Color(145, 196, 131);
+    Color grainColor = new Color(255, 225, 98);
+    Color brickColor = new Color(255, 100, 100);
+    Color oreColor = new Color(153, 153, 153);
+    Color nothingColor = new Color(255, 255, 255);
+
+    private List<String> resources;
+
+    private List<Cube> lumberCubes = new ArrayList<>();
+    private List<Cube> woolCubes = new ArrayList<>();
+    private List<Cube> grainCubes = new ArrayList<>();
+    private List<Cube> brickCubes = new ArrayList<>();
+    private List<Cube> oreCubes = new ArrayList<>();
+
     public Board(HexGrid grid) {
         this.grid = grid;
         this.setSize(850, 850);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(true);
         this.setLayout(null);
+        this.resources = getRandomResourceColorOrder();
 
         boardPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g2d = (Graphics2D) g;
+
+                if (resources.size() < grid.getMap().size()) {
+                    throw new IllegalStateException("Not enough resources for the number of cubes");
+                }
+
+                int resourceIndex = 0;
                 for (Cube cube : grid.getMap().values()) {
-                    cube.drawHexagon(g2d);
+                    String resource = resources.get(resourceIndex);
+                    cube.setResource(resource);
+                    categorizeCubeByResource(cube);
+                    Color color = getResourceColor(resource);
+                    cube.drawHexagon(g2d, color);
+                    resourceIndex++;
                     cube.drawRobber(g2d);
                 }
 
-                for (Vertex vertex : grid.getVertices()) {
-                    vertex.upgrade(g2d);
-                }
+                // for (Edge edge : grid.getEdges()) {
+                // edge.buildRoad(g2d);
+                // }
+
+                // for (Vertex vertex : grid.getVertices()) {
+                // vertex.upgrade(g2d);
+                // }
 
             }
         };
@@ -98,5 +133,53 @@ public class Board extends JFrame implements MouseListener {
             }
         }
         return null;
+    }
+
+    private List<String> getRandomResourceColorOrder() {
+        List<String> resourceColors = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            resourceColors.add("lumber");
+            resourceColors.add("wool");
+            resourceColors.add("grain");
+        }
+        for (int i = 0; i < 3; i++) {
+            resourceColors.add("brick");
+            resourceColors.add("ore");
+        }
+        resourceColors.add("nothing");
+        Collections.shuffle(resourceColors);
+        return resourceColors;
+    }
+
+    private Color getResourceColor(String resource) {
+        switch (resource) {
+            case "lumber":
+                return this.lumberColor;
+            case "wool":
+                return this.woolColor;
+            case "grain":
+                return this.grainColor;
+            case "brick":
+                return this.brickColor;
+            case "ore":
+                return this.oreColor;
+            default:
+                return this.nothingColor;
+        }
+    }
+
+    private void categorizeCubeByResource(Cube cube) {
+        switch (cube.getResource()) {
+            case "lumber":
+                this.lumberCubes.add(cube);
+            case "wool":
+                this.woolCubes.add(cube);
+            case "grain":
+                this.grainCubes.add(cube);
+            case "brick":
+                this.brickCubes.add(cube);
+            case "ore":
+                this.oreCubes.add(cube);
+        }
     }
 }

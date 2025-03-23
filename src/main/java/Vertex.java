@@ -9,6 +9,12 @@ public class Vertex {
 
     public boolean buildable = true;
 
+    private int WIDTH = 20;
+    private int HEIGHT = 20;
+
+    private int x2D;
+    private int y2D;
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -45,6 +51,43 @@ public class Vertex {
         this.grid = grid;
     }
 
+    private void set2dCoordinates() {
+        int firstNeighborPosition = getFirstNeighborPosition();
+        Cube cube = this.getNeighbor(firstNeighborPosition);
+
+        if (this.isPointyTopConfig()) {
+            switch (firstNeighborPosition) {
+                case 0:
+                    x2D = cube.x2D;
+                    y2D = cube.y2D + cube.RADIUS - this.HEIGHT / 2;
+                    break;
+                case 1:
+                    x2D = cube.x2D - cube.horizontalSpacing;
+                    y2D = cube.y2D - this.HEIGHT / 2 - cube.RADIUS / 2;
+                    break;
+                case 2:
+                    x2D = cube.x2D + cube.horizontalSpacing;
+                    y2D = cube.y2D - this.HEIGHT / 2 - cube.RADIUS / 2;
+                    break;
+            }
+        } else {
+            switch (firstNeighborPosition) {
+                case 0:
+                    x2D = cube.x2D - cube.horizontalSpacing;
+                    y2D = cube.y2D - this.HEIGHT / 2 + cube.RADIUS / 2;
+                    break;
+                case 1:
+                    x2D = cube.x2D;
+                    y2D = cube.y2D - this.HEIGHT / 2 - cube.RADIUS;
+                    break;
+                case 2:
+                    x2D = cube.x2D + cube.horizontalSpacing;
+                    y2D = cube.y2D - this.HEIGHT / 2 + cube.RADIUS / 2;
+                    break;
+            }
+        }
+    }
+
     private int getCubePosition(int vertexIndex) {
         switch (vertexIndex) {
             case 0:
@@ -77,65 +120,29 @@ public class Vertex {
 
     public boolean isPointyTopConfig() throws IllegalStateException {
         int firstNeighborPosition = getFirstNeighborPosition();
-        if (firstNeighborPosition == 0) {
-            // The 4th vertex of the first occurring neighbor should be
-            // the current vertex
-            if (this == grid.getVertexByNeighbor(this.getNeighbor(firstNeighborPosition), 3))
-                return true;
-            return false;
-        } else if (firstNeighborPosition == 1) {
-            if (this == grid.getVertexByNeighbor(this.getNeighbor(firstNeighborPosition), 5))
-                return true;
-            return false;
-        } else if (firstNeighborPosition == 2) {
-            if (this == grid.getVertexByNeighbor(this.getNeighbor(firstNeighborPosition), 1))
-                return true;
-            return false;
-        } else
-            throw new IllegalStateException("Vertex is neither in pointy-top or pointy-bottom configuration");
+        int vertexIndexToCheck;
 
+        switch (firstNeighborPosition) {
+            case 0:
+                vertexIndexToCheck = 3;
+                break;
+            case 1:
+                vertexIndexToCheck = 5;
+                break;
+            case 2:
+                vertexIndexToCheck = 1;
+                break;
+            default:
+                throw new IllegalStateException("Vertex is not in a known configuration");
+        }
+
+        return this == grid.getVertexByNeighbor(this.getNeighbor(firstNeighborPosition), vertexIndexToCheck);
     }
 
     public void upgrade(Graphics2D g2d) {
-        int width = 20;
-        int height = 20;
-        int x = 0;
-        int y = 0;
-        if (this.isPointyTopConfig()) {
-            // CubCoordinate -> Cube
-            int firstNeighborPosition = getFirstNeighborPosition();
-            Cube cube = this.getNeighbor(firstNeighborPosition);
-            if (firstNeighborPosition == 0) {
-                x = cube.x2D;
-                y = cube.y2D + cube.RADIUS - height / 2;
-            } else if (firstNeighborPosition == 1) {
-                x = cube.x2D - cube.horizontalSpacing;
-                y = cube.y2D - height / 2 - cube.RADIUS / 2;
-            } else {
-                x = cube.x2D + cube.horizontalSpacing;
-                y = cube.y2D - height / 2 - cube.RADIUS / 2;
-            }
-
-            g2d.setColor(Color.ORANGE);
-            g2d.fillRect(x - width / 2, y, width, height);
-        } else {
-            // CubCoordinate -> Cube
-            int firstNeighborPosition = getFirstNeighborPosition();
-            Cube cube = this.getNeighbor(firstNeighborPosition);
-            if (firstNeighborPosition == 0) {
-                x = cube.x2D - cube.horizontalSpacing;
-                y = cube.y2D - height / 2 + cube.RADIUS / 2;
-            } else if (firstNeighborPosition == 1) {
-                x = cube.x2D;
-                y = cube.y2D - height / 2 - cube.RADIUS;
-            } else {
-                x = cube.x2D + cube.horizontalSpacing;
-                y = cube.y2D - height / 2 + cube.RADIUS / 2;
-            }
-
-            g2d.setColor(Color.ORANGE);
-            g2d.fillRect(x - width / 2, y, width, height);
-        }
+        this.set2dCoordinates();
+        g2d.setColor(new Color(119, 205, 255));
+        g2d.fillRect(this.x2D - this.WIDTH / 2, this.y2D, this.WIDTH, this.HEIGHT);
     }
 
     private Cube getNeighbor(int position) throws IllegalArgumentException {
@@ -153,6 +160,22 @@ public class Vertex {
         }
         throw new IllegalStateException("Vertex has no neighbor cubes");
 
+    }
+
+    public int getX2D() {
+        return this.x2D;
+    }
+
+    public int getY2D() {
+        return this.y2D;
+    }
+
+    public int getWidth() {
+        return this.WIDTH;
+    }
+
+    public int getHeight() {
+        return this.HEIGHT;
     }
 
 }

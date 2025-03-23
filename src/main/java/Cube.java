@@ -31,6 +31,10 @@ public class Cube {
     public int verticalSpacing = (int) Math.round(this.RADIUS * 1.5); // Distance between centers vertically
 
     private boolean robber = false;
+    private Color robberColor = new Color(0, 0, 0);
+
+    private int number;
+    private String resource;
 
     Cube(int x, int y, int z, Vertex a, Vertex b, Vertex c, Vertex d, Vertex e, Vertex f) {
         this.x = x;
@@ -106,8 +110,8 @@ public class Cube {
 
     public void drawRobber(Graphics2D g2d) {
         if (this.robber) {
-            g2d.setColor(Color.RED); // Set a color for the robber
-            g2d.fillRect(x2D - 10, y2D - 30, 20, 20); // Draw a small rectangle as the robber
+            g2d.setColor(this.robberColor); // Set a color for the robber
+            g2d.fillOval(x2D - 40, y2D - 40, 20, 20); // Draw a small rectangle as the robber
         }
     }
 
@@ -115,12 +119,7 @@ public class Cube {
         return this.robber;
     }
 
-    public void drawHexagon(Graphics2D g2d) {
-
-        // int centerX = (int) (400 - horizontalSpacing * cube.x + horizontalSpacing *
-        // cube.y);
-        // int centerY = (int) (400 + verticalSpacing * (cube.x + cube.y));
-
+    public void drawHexagon(Graphics2D g2d, Color color) {
         this.x2D = 400 - this.horizontalSpacing * this.x + this.horizontalSpacing * this.y;
         this.y2D = 400 + this.verticalSpacing * (this.x + this.y);
 
@@ -134,12 +133,22 @@ public class Cube {
             yPoints[i] = (int) (this.y2D + this.RADIUS * Math.sin(angle));
         }
 
+        g2d.setColor(color);
+        g2d.fillPolygon(xPoints, yPoints, 6);
         g2d.setColor(Color.BLACK); // Set the color for the hexagon outline
         g2d.drawPolygon(xPoints, yPoints, 6);
 
-        g2d.drawString(this.toString(), this.x2D - 20, this.y2D + 5);
+        // g2d.drawString(this.toString(), this.x2D - 20, this.y2D + 5);
 
         this.drawRobber(g2d); // Draw the robber if present
+    }
+
+    public void setResource(String resource) {
+        this.resource = resource;
+    }
+
+    public String getResource() {
+        return this.resource;
     }
 
 }
