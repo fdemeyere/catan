@@ -1,9 +1,9 @@
 public class Edge {
-    VertexID a;
-    VertexID b;
+    Vertex a;
+    Vertex b;
     Player owner = null;
 
-    Edge(VertexID a, VertexID b) {
+    Edge(Vertex a, Vertex b) {
         this.a = a;
         this.b = b;
     }

@@ -12,6 +12,8 @@ public class Main {
         } catch (Exception e) {
             System.out.println(e);
         }
+
+        main.printSetupInfo();
     }
 
     public void printSetupInfo() {
@@ -19,6 +21,5 @@ public class Main {
         System.out.println("Number of vertices: " + grid.getVertices().size());
         System.out.println("Number of tiles: " + grid.getMap().size());
         System.out.println("Number of edges: " + grid.getEdges().size());
-        System.out.println("Number of vertexID: " + grid.idToVertex.values().size());
     }
 }

@@ -10,8 +10,6 @@ public class HexGrid {
     private final Map<CubeCoordinate, Cube> map;
     private final int width;
 
-    public final Map<VertexID, Vertex> idToVertex;
-
     private final List<Edge> edges = new ArrayList<>();
 
     private List<Vertex> vertices = new ArrayList<>();
@@ -34,7 +32,6 @@ public class HexGrid {
             throw new Exception("Board width and height must be equal");
 
         this.map = new HashMap<>();
-        this.idToVertex = new HashMap<>();
         this.width = width;
 
         for (int x = -(width - 1) / 2; x <= (width - 1) / 2; x++) {
@@ -81,7 +78,7 @@ public class HexGrid {
                 }
 
                 if (sharedEdge == null) {
-                    sharedEdge = new Edge(cubeVertices[0].id, cubeVertices[1].id);
+                    sharedEdge = new Edge(cubeVertices[0], cubeVertices[1]);
                     edges.add(sharedEdge);
                 }
 
@@ -147,7 +144,7 @@ public class HexGrid {
                 }
 
                 // if (sharedVertex == null) {
-                // sharedVertex = new Vertex(currentVertexID);
+                // sharedVertex = new VertexID(currentVertexID);
                 // idToVertex.put(currentVertexID, sharedVertex);
                 // currentVertexID++;
                 // }
@@ -161,7 +158,7 @@ public class HexGrid {
                 }
 
                 cubeVertices[i] = sharedVertex;
-                sharedVertex.id.setNeighborCubeByVertexPosition(i, cube);
+                sharedVertex.setNeighborCubeByVertexPosition(i, cube);
 
                 // System.out.println("----------------------------------------------------");
                 // System.out.println("Current vertex position: " + i);
@@ -175,10 +172,6 @@ public class HexGrid {
         cube.d = cubeVertices[3];
         cube.e = cubeVertices[4];
         cube.f = cubeVertices[5];
-
-        for (Vertex vertex : vertices) {
-            idToVertex.put(vertex.id, vertex);
-        }
     }
 
     private Vertex getVertexByNeighbor(Cube neighbor, int vertexIndex) {
@@ -210,13 +203,7 @@ public class HexGrid {
     }
 
     public Collection<Vertex> getVertices() {
-        return idToVertex.values();
-    }
-
-    public Vertex getVertexByID(CubeCoordinate coord1, CubeCoordinate coord2, CubeCoordinate coord3) {
-        VertexID idToLookUp = new VertexID(coord1, coord2, coord3);
-
-        return idToVertex.get(idToLookUp);
+        return vertices;
     }
 
     public List<Edge> getEdges() {
