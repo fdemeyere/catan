@@ -12,8 +12,6 @@ public class Main {
         } catch (Exception e) {
             System.out.println(e);
         }
-
-        main.printSetupInfo();
     }
 
     public void printSetupInfo() {

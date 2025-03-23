@@ -2,28 +2,33 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 
 public class Cube {
-    int RADIUS = 50;
+    public int RADIUS = 80;
 
-    int x;
-    int y;
-    int z;
+    public int x;
+    public int y;
+    public int z;
 
-    Vertex a;
-    Vertex b;
-    Vertex c;
-    Vertex d;
-    Vertex e;
-    Vertex f;
+    public Vertex a;
+    public Vertex b;
+    public Vertex c;
+    public Vertex d;
+    public Vertex e;
+    public Vertex f;
 
-    Edge e1;
-    Edge e2;
-    Edge e3;
-    Edge e4;
-    Edge e5;
-    Edge e6;
+    public Edge e1;
+    public Edge e2;
+    public Edge e3;
+    public Edge e4;
+    public Edge e5;
+    public Edge e6;
 
-    int x2D;
-    int y2D;
+    public int x2D;
+    public int y2D;
+
+    // Distance between centers horizontally
+    public int horizontalSpacing = (int) Math.round(this.RADIUS * Math.sqrt(3) / 2);
+
+    public int verticalSpacing = (int) Math.round(this.RADIUS * 1.5); // Distance between centers vertically
 
     private boolean robber = false;
 
@@ -108,6 +113,33 @@ public class Cube {
 
     public boolean hasRobber() {
         return this.robber;
+    }
+
+    public void drawHexagon(Graphics2D g2d) {
+
+        // int centerX = (int) (400 - horizontalSpacing * cube.x + horizontalSpacing *
+        // cube.y);
+        // int centerY = (int) (400 + verticalSpacing * (cube.x + cube.y));
+
+        this.x2D = 400 - this.horizontalSpacing * this.x + this.horizontalSpacing * this.y;
+        this.y2D = 400 + this.verticalSpacing * (this.x + this.y);
+
+        int[] xPoints = new int[6];
+        int[] yPoints = new int[6];
+
+        for (int i = 0; i < 6; i++) {
+            // Adjusted angle calculation for pointy-up orientation
+            double angle = 2 * Math.PI / 6 * i - Math.PI / 2;
+            xPoints[i] = (int) Math.round(this.x2D + this.RADIUS * Math.cos(angle));
+            yPoints[i] = (int) (this.y2D + this.RADIUS * Math.sin(angle));
+        }
+
+        g2d.setColor(Color.BLACK); // Set the color for the hexagon outline
+        g2d.drawPolygon(xPoints, yPoints, 6);
+
+        g2d.drawString(this.toString(), this.x2D - 20, this.y2D + 5);
+
+        this.drawRobber(g2d); // Draw the robber if present
     }
 
 }

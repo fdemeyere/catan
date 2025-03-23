@@ -150,7 +150,7 @@ public class HexGrid {
                 // }
 
                 if (sharedVertex == null) {
-                    sharedVertex = new Vertex();
+                    sharedVertex = new Vertex(this);
                     // idToVertex.put(sharedVertex.id, sharedVertex);
 
                     vertices.add(sharedVertex);
@@ -174,7 +174,7 @@ public class HexGrid {
         cube.f = cubeVertices[5];
     }
 
-    private Vertex getVertexByNeighbor(Cube neighbor, int vertexIndex) {
+    public Vertex getVertexByNeighbor(Cube neighbor, int vertexIndex) {
         switch (vertexIndex) {
             case 0:
                 return neighbor.a;
