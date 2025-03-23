@@ -1,8 +1,6 @@
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -17,6 +15,12 @@ public class Board extends JFrame implements MouseListener {
 
     private JPanel boardPanel;
 
+    Graphics2D g2d;
+
+    boolean robberToMove = true;
+
+    Cube robberPlacement = null;
+
     public Board(HexGrid grid) {
         this.grid = grid;
         this.setSize(850, 850);
@@ -28,9 +32,10 @@ public class Board extends JFrame implements MouseListener {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g;
+                g2d = (Graphics2D) g;
                 for (Cube cube : grid.getMap().values()) {
                     drawHexagon(cube, g2d);
+                    cube.drawRobber(g2d);
                 }
 
             }
@@ -71,6 +76,8 @@ public class Board extends JFrame implements MouseListener {
         g2d.drawPolygon(xPoints, yPoints, 6);
 
         g2d.drawString(cube.toString(), cube.x2D - 20, cube.y2D + 5);
+
+        cube.drawRobber(g2d); // Draw the robber if present
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -84,13 +91,23 @@ public class Board extends JFrame implements MouseListener {
     public void mouseReleased(MouseEvent e) {
         Point point = e.getPoint();
 
-        boolean found = false;
-        for (Cube cube : grid.getMap().values()) {
+        if (robberToMove) {
+            Cube clickedCube = getClickedCube(point.getX(), point.getY());
+            if (clickedCube != null) {
+                if (!clickedCube.hasRobber()) {
+                    if (this.robberPlacement != null) {
+                        this.robberPlacement.removeRobber();
+                    }
+                    clickedCube.placeRobber();
+                    this.robberPlacement = clickedCube;
+                    // robberToMove = false;
+                }
 
-            if (cube.cubeContains2DCoord(point.getX(), point.getY()))
-                found = true;
+            }
+
         }
-        System.out.println(found);
+
+        boardPanel.repaint(); // Trigger a repaint to update the drawing
     }
 
     public void mouseEntered(MouseEvent e) {
@@ -99,5 +116,18 @@ public class Board extends JFrame implements MouseListener {
 
     public void mouseExited(MouseEvent e) {
         return;
+    }
+
+    // public void placeRobber(Graphics2D g2d, Cube cube) {
+    // cube.placeRobber(g2d);
+    // }
+
+    private Cube getClickedCube(double x2d, double y2d) {
+        for (Cube cube : grid.getMap().values()) {
+            if (cube.cubeContains2DCoord(x2d, y2d)) {
+                return cube;
+            }
+        }
+        return null;
     }
 }

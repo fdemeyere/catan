@@ -1,3 +1,6 @@
+import java.awt.Graphics2D;
+import java.awt.Color;
+
 public class Cube {
     int RADIUS = 50;
 
@@ -21,6 +24,8 @@ public class Cube {
 
     int x2D;
     int y2D;
+
+    private boolean robber = false;
 
     Cube(int x, int y, int z, Vertex a, Vertex b, Vertex c, Vertex d, Vertex e, Vertex f) {
         this.x = x;
@@ -84,6 +89,25 @@ public class Cube {
 
         return yClicked <= k * xClicked + m;
 
+    }
+
+    public void placeRobber() {
+        this.robber = true; // Update the state to indicate the robber is placed
+    }
+
+    public void removeRobber() {
+        this.robber = false;
+    }
+
+    public void drawRobber(Graphics2D g2d) {
+        if (this.robber) {
+            g2d.setColor(Color.RED); // Set a color for the robber
+            g2d.fillRect(x2D - 10, y2D - 30, 20, 20); // Draw a small rectangle as the robber
+        }
+    }
+
+    public boolean hasRobber() {
+        return this.robber;
     }
 
 }
