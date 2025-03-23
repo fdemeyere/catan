@@ -78,7 +78,7 @@ public class HexGrid {
                 }
 
                 if (sharedEdge == null) {
-                    sharedEdge = new Edge(cubeVertices[0], cubeVertices[1]);
+                    sharedEdge = new Edge(cubeVertices[i], cubeVertices[(i + 1) % 6]);
                     edges.add(sharedEdge);
                 }
 
