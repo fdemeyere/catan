@@ -21,7 +21,7 @@ public class Board extends JFrame implements MouseListener {
 
     Graphics2D g2d;
 
-    boolean robberToMove = true;
+    boolean robberToMove = false;
 
     Cube robberPlacement = null;
 
@@ -59,7 +59,7 @@ public class Board extends JFrame implements MouseListener {
                     Color color = getResourceColor(cube.getResource());
                     cube.drawHexagon(g2d, color);
                     cube.drawNumber(g2d);
-                    cube.drawRobber(g2d);
+                    cube.drawRobber(g2d); // Draw the robber if present
                 }
 
                 // for (Edge edge : grid.getEdges()) {
@@ -67,7 +67,8 @@ public class Board extends JFrame implements MouseListener {
                 // }
 
                 for (Vertex vertex : grid.getVertices()) {
-                    vertex.upgrade(g2d);
+                    if (vertex.upgradable)
+                        vertex.drawPossibleUpgrade(g2d);
                 }
 
             }
@@ -101,14 +102,22 @@ public class Board extends JFrame implements MouseListener {
                     }
                     clickedCube.placeRobber();
                     this.robberPlacement = clickedCube;
-                    // robberToMove = false;
+
+                    boardPanel.repaint();
                 }
 
             }
-
+            return;
+        }
+        Vertex clickedVertex = getClickedVertex(point.getX(), point.getY());
+        if (clickedVertex != null) {
+            if (clickedVertex.upgradable) {
+                clickedVertex.upgrade(g2d);
+            }
         }
 
-        boardPanel.repaint(); // Trigger a repaint to update the drawing
+        boardPanel.repaint();
+
     }
 
     public void mouseEntered(MouseEvent e) {
@@ -123,6 +132,18 @@ public class Board extends JFrame implements MouseListener {
         for (Cube cube : grid.getMap().values()) {
             if (cube.cubeContains2DCoord(x2d, y2d)) {
                 return cube;
+            }
+        }
+        return null;
+    }
+
+    private Vertex getClickedVertex(double x2d, double y2d) {
+        for (Vertex vertex : grid.getVertices()) {
+            if (Math.pow(x2d - vertex.getX2D(), 2)
+                    + Math.pow(y2d - vertex.getY2D(), 2) <= Math
+                            .pow(vertex.getCircleRadius(), 2)) {
+                System.out.println("True");
+                return vertex;
             }
         }
         return null;
