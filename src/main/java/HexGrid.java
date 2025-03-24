@@ -56,6 +56,7 @@ public class HexGrid {
 
             }
         }
+
         // Initialize numberToCubes map
         for (int i = 2; i <= 12; i++) {
             numberToCubes.put(i, new ArrayList<>());
@@ -63,8 +64,12 @@ public class HexGrid {
 
         for (Cube cube : map.values()) {
             this.setEdges(cube);
+            cube.set2dCoordinates();
         }
 
+        for (Vertex vertex : vertices) {
+            vertex.set2dCoordinates();
+        }
     }
 
     private void setEdges(Cube cube) {
