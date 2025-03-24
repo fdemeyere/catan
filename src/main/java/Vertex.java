@@ -1,17 +1,18 @@
 import java.util.Objects;
 import java.awt.Graphics2D;
 import java.awt.Color;
+import javax.swing.JPanel;
 
-public class Vertex {
+public class Vertex extends JPanel {
     private HexGrid grid;
 
     private CubeCoordinate[] neighborCubes = new CubeCoordinate[3];
 
-    public boolean upgradable = true;
+    public boolean settlement = false;
+
+    public boolean city = false;
 
     private int WIDTH = 30;
-    private int HEIGHT = 30;
-    private int CIRCLE_RADIUS = 15;
 
     private int x2D;
     private int y2D;
@@ -60,30 +61,30 @@ public class Vertex {
             switch (firstNeighborPosition) {
                 case 0:
                     x2D = cube.x2D;
-                    y2D = cube.y2D + cube.RADIUS - this.HEIGHT / 2;
+                    y2D = cube.y2D + cube.RADIUS;
                     break;
                 case 1:
                     x2D = cube.x2D - cube.horizontalSpacing;
-                    y2D = cube.y2D - this.HEIGHT / 2 - cube.RADIUS / 2;
+                    y2D = cube.y2D - cube.RADIUS / 2;
                     break;
                 case 2:
                     x2D = cube.x2D + cube.horizontalSpacing;
-                    y2D = cube.y2D - this.HEIGHT / 2 - cube.RADIUS / 2;
+                    y2D = cube.y2D - cube.RADIUS / 2;
                     break;
             }
         } else {
             switch (firstNeighborPosition) {
                 case 0:
                     x2D = cube.x2D - cube.horizontalSpacing;
-                    y2D = cube.y2D - this.HEIGHT / 2 + cube.RADIUS / 2;
+                    y2D = cube.y2D + cube.RADIUS / 2;
                     break;
                 case 1:
                     x2D = cube.x2D;
-                    y2D = cube.y2D - this.HEIGHT / 2 - cube.RADIUS;
+                    y2D = cube.y2D - cube.RADIUS;
                     break;
                 case 2:
                     x2D = cube.x2D + cube.horizontalSpacing;
-                    y2D = cube.y2D - this.HEIGHT / 2 + cube.RADIUS / 2;
+                    y2D = cube.y2D + cube.RADIUS / 2;
                     break;
             }
         }
@@ -140,14 +141,24 @@ public class Vertex {
         return this == grid.getVertexByNeighbor(this.getNeighbor(firstNeighborPosition), vertexIndexToCheck);
     }
 
-    public void upgrade(Graphics2D g2d) {
-        g2d.setColor(new Color(100, 255, 255));
-        g2d.fillRect(this.x2D - this.WIDTH / 2, this.y2D, this.WIDTH, this.HEIGHT);
+    public void upgrade() {
+        this.settlement = true;
     }
 
     public void drawPossibleUpgrade(Graphics2D g2d) {
         g2d.setColor(new Color(119, 205, 255, 128));
-        g2d.fillOval(this.x2D - this.CIRCLE_RADIUS, this.y2D, this.CIRCLE_RADIUS * 2, this.CIRCLE_RADIUS * 2);
+        g2d.fillOval(this.x2D - this.WIDTH / 2, this.y2D - this.WIDTH / 2, this.WIDTH / 2 * 2,
+                this.WIDTH / 2 * 2);
+    }
+
+    public void drawSettlement(Graphics2D g2d) {
+        g2d.setColor(new Color(255, 0, 0));
+        g2d.fillOval(this.x2D - this.WIDTH / 2, this.y2D - this.WIDTH / 2, this.WIDTH, this.WIDTH);
+    }
+
+    public void drawCity(Graphics2D g2d) {
+        g2d.setColor(new Color(255, 0, 0));
+        g2d.fillRect(this.x2D - this.WIDTH / 2, this.y2D - this.WIDTH / 2, this.WIDTH, this.WIDTH);
     }
 
     private Cube getNeighbor(int position) throws IllegalArgumentException {
@@ -179,11 +190,27 @@ public class Vertex {
         return this.WIDTH;
     }
 
-    public int getHeight() {
-        return this.HEIGHT;
+    public void placeSettlement() {
+        this.settlement = true;
     }
 
-    public int getCircleRadius() {
-        return this.CIRCLE_RADIUS;
+    public void removeSettlement() {
+        this.settlement = false;
+    }
+
+    public boolean isSettlement() {
+        return this.settlement;
+    }
+
+    public void placeCity() {
+        this.city = true;
+    }
+
+    public void removeCity() {
+        this.city = false;
+    }
+
+    public boolean isCity() {
+        return this.city;
     }
 }

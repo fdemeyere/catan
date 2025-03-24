@@ -67,8 +67,12 @@ public class Board extends JFrame implements MouseListener {
                 // }
 
                 for (Vertex vertex : grid.getVertices()) {
-                    if (vertex.upgradable)
+                    if (!vertex.isSettlement() && !vertex.isCity())
                         vertex.drawPossibleUpgrade(g2d);
+                    else if (vertex.isSettlement())
+                        vertex.drawSettlement(g2d);
+                    else if (vertex.isCity())
+                        vertex.drawCity(g2d);
                 }
 
             }
@@ -111,8 +115,11 @@ public class Board extends JFrame implements MouseListener {
         }
         Vertex clickedVertex = getClickedVertex(point.getX(), point.getY());
         if (clickedVertex != null) {
-            if (clickedVertex.upgradable) {
-                clickedVertex.upgrade(g2d);
+            if (!clickedVertex.isSettlement() && !clickedVertex.isCity()) {
+                clickedVertex.placeSettlement();
+            } else if (clickedVertex.isSettlement()) {
+                clickedVertex.removeSettlement();
+                clickedVertex.placeCity();
             }
         }
 
@@ -141,7 +148,7 @@ public class Board extends JFrame implements MouseListener {
         for (Vertex vertex : grid.getVertices()) {
             if (Math.pow(x2d - vertex.getX2D(), 2)
                     + Math.pow(y2d - vertex.getY2D(), 2) <= Math
-                            .pow(vertex.getCircleRadius(), 2)) {
+                            .pow(vertex.getWidth() / 2, 2)) {
                 System.out.println("True");
                 return vertex;
             }
