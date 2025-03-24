@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import java.util.Collection;
+import java.util.Collections;
 
 public class HexGrid {
 
@@ -22,6 +23,14 @@ public class HexGrid {
             "bottomleft", new CubeCoordinate(1, 0, -1),
             "left", new CubeCoordinate(1, -1, 0),
             "null", new CubeCoordinate(0, 0, 0)));
+
+    private List<Cube> lumberCubes = new ArrayList<>();
+    private List<Cube> woolCubes = new ArrayList<>();
+    private List<Cube> grainCubes = new ArrayList<>();
+    private List<Cube> brickCubes = new ArrayList<>();
+    private List<Cube> oreCubes = new ArrayList<>();
+
+    private Map<Integer, List<Cube>> numberToCubes = new HashMap<>();
 
     HexGrid(int width, int height) throws Exception {
         if (width < 5)
@@ -46,6 +55,10 @@ public class HexGrid {
                 }
 
             }
+        }
+        // Initialize numberToCubes map
+        for (int i = 2; i <= 12; i++) {
+            numberToCubes.put(i, new ArrayList<>());
         }
 
         for (Cube cube : map.values()) {
@@ -208,6 +221,51 @@ public class HexGrid {
 
     public List<Edge> getEdges() {
         return edges;
+    }
+
+    public void assignResourcesAndNumbers(List<String> resources, List<Integer> numbers) {
+        int resourceIndex = 0;
+        int numberIndex = 0;
+
+        for (Cube cube : map.values()) {
+            String resource = resources.get(resourceIndex);
+            cube.setResource(resource);
+            this.categorizeCubeByResource(cube);
+
+            if (!resource.equals("nothing")) {
+                cube.setNumber(numbers.get(numberIndex));
+                this.categorizeCubeByNumber(cube);
+                numberIndex++;
+            }
+
+            resourceIndex++;
+        }
+    }
+
+    private void categorizeCubeByResource(Cube cube) {
+        switch (cube.getResource()) {
+            case "lumber":
+                this.lumberCubes.add(cube);
+            case "wool":
+                this.woolCubes.add(cube);
+            case "grain":
+                this.grainCubes.add(cube);
+            case "brick":
+                this.brickCubes.add(cube);
+            case "ore":
+                this.oreCubes.add(cube);
+        }
+    }
+
+    private void categorizeCubeByNumber(Cube cube) {
+        int number = cube.getNumber();
+        if (numberToCubes.containsKey(number)) {
+            numberToCubes.get(number).add(cube);
+        }
+    }
+
+    public List<Cube> getCubesByNumber(int number) {
+        return numberToCubes.getOrDefault(number, Collections.emptyList());
     }
 
 }

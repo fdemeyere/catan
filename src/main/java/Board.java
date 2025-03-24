@@ -28,17 +28,11 @@ public class Board extends JFrame implements MouseListener {
     Color lumberColor = new Color(63, 125, 88);
     Color woolColor = new Color(145, 196, 131);
     Color grainColor = new Color(255, 225, 98);
-    Color brickColor = new Color(255, 100, 100);
+    // Color brickColor = new Color(210, 102, 90);
     Color oreColor = new Color(153, 153, 153);
-    Color nothingColor = new Color(255, 255, 255);
+    Color nothingColor = new Color(229, 208, 172);
 
-    private List<String> resources;
-
-    private List<Cube> lumberCubes = new ArrayList<>();
-    private List<Cube> woolCubes = new ArrayList<>();
-    private List<Cube> grainCubes = new ArrayList<>();
-    private List<Cube> brickCubes = new ArrayList<>();
-    private List<Cube> oreCubes = new ArrayList<>();
+    Color brickColor = new Color(207, 139, 100);
 
     public Board(HexGrid grid) {
         this.grid = grid;
@@ -46,7 +40,10 @@ public class Board extends JFrame implements MouseListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(true);
         this.setLayout(null);
-        this.resources = getRandomResourceColorOrder();
+
+        List<String> resources = this.getRandomResourceColorOrder();
+        List<Integer> numbers = this.getRandomNumberOrder();
+        grid.assignResourcesAndNumbers(resources, numbers);
 
         boardPanel = new JPanel() {
             @Override
@@ -58,14 +55,10 @@ public class Board extends JFrame implements MouseListener {
                     throw new IllegalStateException("Not enough resources for the number of cubes");
                 }
 
-                int resourceIndex = 0;
                 for (Cube cube : grid.getMap().values()) {
-                    String resource = resources.get(resourceIndex);
-                    cube.setResource(resource);
-                    categorizeCubeByResource(cube);
-                    Color color = getResourceColor(resource);
+                    Color color = getResourceColor(cube.getResource());
                     cube.drawHexagon(g2d, color);
-                    resourceIndex++;
+                    cube.drawNumber(g2d);
                     cube.drawRobber(g2d);
                 }
 
@@ -73,9 +66,9 @@ public class Board extends JFrame implements MouseListener {
                 // edge.buildRoad(g2d);
                 // }
 
-                // for (Vertex vertex : grid.getVertices()) {
-                // vertex.upgrade(g2d);
-                // }
+                for (Vertex vertex : grid.getVertices()) {
+                    vertex.upgrade(g2d);
+                }
 
             }
         };
@@ -151,6 +144,20 @@ public class Board extends JFrame implements MouseListener {
         return resourceColors;
     }
 
+    private List<Integer> getRandomNumberOrder() {
+        List<Integer> numbers = new ArrayList<>();
+        for (int i = 3; i <= 11; i++) {
+            if (i == 7)
+                continue;
+            numbers.add(i);
+            numbers.add(i);
+        }
+        numbers.add(2);
+        numbers.add(12);
+        Collections.shuffle(numbers);
+        return numbers;
+    }
+
     private Color getResourceColor(String resource) {
         switch (resource) {
             case "lumber":
@@ -168,18 +175,4 @@ public class Board extends JFrame implements MouseListener {
         }
     }
 
-    private void categorizeCubeByResource(Cube cube) {
-        switch (cube.getResource()) {
-            case "lumber":
-                this.lumberCubes.add(cube);
-            case "wool":
-                this.woolCubes.add(cube);
-            case "grain":
-                this.grainCubes.add(cube);
-            case "brick":
-                this.brickCubes.add(cube);
-            case "ore":
-                this.oreCubes.add(cube);
-        }
-    }
 }
