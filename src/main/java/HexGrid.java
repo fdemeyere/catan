@@ -70,6 +70,10 @@ public class HexGrid {
         for (Vertex vertex : vertices) {
             vertex.set2dCoordinates();
         }
+
+        for (Edge edge : edges) {
+            edge.set2dCoordinates();
+        }
     }
 
     private void setEdges(Cube cube) {

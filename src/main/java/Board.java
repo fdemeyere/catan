@@ -62,13 +62,15 @@ public class Board extends JFrame implements MouseListener {
                     cube.drawRobber(g2d); // Draw the robber if present
                 }
 
-                // for (Edge edge : grid.getEdges()) {
-                // edge.buildRoad(g2d);
-                // }
+                for (Edge edge : grid.getEdges()) {
+
+                    edge.highlightRoadOption(g2d);
+                    edge.drawRoad(g2d);
+                }
 
                 for (Vertex vertex : grid.getVertices()) {
                     if (!vertex.isSettlement() && !vertex.isCity())
-                        vertex.drawPossibleUpgrade(g2d);
+                        vertex.highlightSettlementOption(g2d);
                     else if (vertex.isSettlement())
                         vertex.drawSettlement(g2d);
                     else if (vertex.isCity())
@@ -117,13 +119,20 @@ public class Board extends JFrame implements MouseListener {
         if (clickedVertex != null) {
             if (!clickedVertex.isSettlement() && !clickedVertex.isCity()) {
                 clickedVertex.placeSettlement();
+                boardPanel.repaint();
             } else if (clickedVertex.isSettlement()) {
                 clickedVertex.removeSettlement();
                 clickedVertex.placeCity();
+                boardPanel.repaint();
             }
+            return;
         }
 
-        boardPanel.repaint();
+        Edge clickedEdge = getClickedEdge(point.getX(), point.getY());
+        if (clickedEdge != null && !clickedEdge.hasRoad()) {
+            clickedEdge.placeRoad();
+            boardPanel.repaint();
+        }
 
     }
 
@@ -151,6 +160,18 @@ public class Board extends JFrame implements MouseListener {
                             .pow(vertex.getWidth() / 2, 2)) {
                 System.out.println("True");
                 return vertex;
+            }
+        }
+        return null;
+    }
+
+    private Edge getClickedEdge(double x2d, double y2d) {
+        for (Edge edge : grid.getEdges()) {
+            if (Math.pow(x2d - edge.getX2D(), 2)
+                    + Math.pow(y2d - edge.getY2D(), 2) <= Math
+                            .pow(edge.getOptionalRoadWidth() / 2, 2)) {
+                System.out.println("True");
+                return edge;
             }
         }
         return null;
