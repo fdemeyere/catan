@@ -7,10 +7,11 @@ public class Vertex {
 
     private CubeCoordinate[] neighborCubes = new CubeCoordinate[3];
 
-    public boolean buildable = true;
+    public boolean upgradable = true;
 
-    private int WIDTH = 20;
-    private int HEIGHT = 20;
+    private int WIDTH = 30;
+    private int HEIGHT = 30;
+    private int CIRCLE_RADIUS = 15;
 
     private int x2D;
     private int y2D;
@@ -51,7 +52,7 @@ public class Vertex {
         this.grid = grid;
     }
 
-    private void set2dCoordinates() {
+    public void set2dCoordinates() {
         int firstNeighborPosition = getFirstNeighborPosition();
         Cube cube = this.getNeighbor(firstNeighborPosition);
 
@@ -140,9 +141,13 @@ public class Vertex {
     }
 
     public void upgrade(Graphics2D g2d) {
-        this.set2dCoordinates();
-        g2d.setColor(new Color(119, 205, 255));
+        g2d.setColor(new Color(100, 255, 255));
         g2d.fillRect(this.x2D - this.WIDTH / 2, this.y2D, this.WIDTH, this.HEIGHT);
+    }
+
+    public void drawPossibleUpgrade(Graphics2D g2d) {
+        g2d.setColor(new Color(119, 205, 255, 128));
+        g2d.fillOval(this.x2D - this.CIRCLE_RADIUS, this.y2D, this.CIRCLE_RADIUS * 2, this.CIRCLE_RADIUS * 2);
     }
 
     private Cube getNeighbor(int position) throws IllegalArgumentException {
@@ -178,4 +183,7 @@ public class Vertex {
         return this.HEIGHT;
     }
 
+    public int getCircleRadius() {
+        return this.CIRCLE_RADIUS;
+    }
 }
