@@ -1,6 +1,8 @@
 import java.awt.Graphics2D;
 import java.awt.Color;
 
+import java.awt.Font;
+
 public class Cube {
     public int RADIUS = 80;
 
@@ -119,10 +121,12 @@ public class Cube {
         return this.robber;
     }
 
-    public void drawHexagon(Graphics2D g2d, Color color) {
+    public void set2dCoordinates() {
         this.x2D = 400 - this.horizontalSpacing * this.x + this.horizontalSpacing * this.y;
         this.y2D = 400 + this.verticalSpacing * (this.x + this.y);
+    }
 
+    public void drawHexagon(Graphics2D g2d, Color color) {
         int[] xPoints = new int[6];
         int[] yPoints = new int[6];
 
@@ -139,8 +143,6 @@ public class Cube {
         g2d.drawPolygon(xPoints, yPoints, 6);
 
         // g2d.drawString(this.toString(), this.x2D - 20, this.y2D + 5);
-
-        this.drawRobber(g2d); // Draw the robber if present
     }
 
     public void setResource(String resource) {
@@ -149,6 +151,21 @@ public class Cube {
 
     public String getResource() {
         return this.resource;
+    }
+
+    public void drawNumber(Graphics2D g2d) {
+        g2d.setFont(new Font("Courier New", Font.PLAIN, 40));
+        g2d.setColor(new Color(26, 26, 26));
+
+        g2d.drawString("" + (this.number != 0 ? this.number : ""), this.x2D - 20, this.y2D + 5);
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public int getNumber() {
+        return this.number;
     }
 
 }

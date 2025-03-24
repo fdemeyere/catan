@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.BasicStroke;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +26,14 @@ public class Board extends JFrame implements MouseListener {
 
     Cube robberPlacement = null;
 
-    Color lumberColor = new Color(63, 125, 88);
-    Color woolColor = new Color(145, 196, 131);
-    Color grainColor = new Color(255, 225, 98);
-    // Color brickColor = new Color(210, 102, 90);
-    Color oreColor = new Color(153, 153, 153);
-    Color nothingColor = new Color(229, 208, 172);
+    Color brickColor = new Color(208, 105, 56);
+    Color woolColor = new Color(149, 179, 57);
+    Color lumberColor = new Color(67, 145, 70);
+    Color grainColor = new Color(230, 185, 69);
+    Color oreColor = new Color(162, 166, 162);
+    Color nothingColor = new Color(206, 199, 146);
 
-    Color brickColor = new Color(207, 139, 100);
+    // Color test = new Color(rgb(61, 184, 54));
 
     public Board(HexGrid grid) {
         this.grid = grid;
@@ -50,6 +51,9 @@ public class Board extends JFrame implements MouseListener {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g2d = (Graphics2D) g;
+                BasicStroke bs = new BasicStroke(7);
+                g2d.setStroke(bs);
+                g2d.setColor(new Color(26, 26, 26));
 
                 if (resources.size() < grid.getMap().size()) {
                     throw new IllegalStateException("Not enough resources for the number of cubes");
@@ -64,14 +68,14 @@ public class Board extends JFrame implements MouseListener {
 
                 for (Edge edge : grid.getEdges()) {
 
-                    edge.highlightRoadOption(g2d);
+                    // edge.highlightRoadOption(g2d);
                     edge.drawRoad(g2d);
                 }
 
                 for (Vertex vertex : grid.getVertices()) {
-                    if (!vertex.isSettlement() && !vertex.isCity())
-                        vertex.highlightSettlementOption(g2d);
-                    else if (vertex.isSettlement())
+                    if (!vertex.isSettlement() && !vertex.isCity()) {
+                        // vertex.highlightSettlementOption(g2d);
+                    } else if (vertex.isSettlement())
                         vertex.drawSettlement(g2d);
                     else if (vertex.isCity())
                         vertex.drawCity(g2d);
