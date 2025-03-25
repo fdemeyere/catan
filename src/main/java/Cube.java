@@ -1,10 +1,10 @@
 import java.awt.Graphics2D;
 import java.awt.Color;
-
 import java.awt.Font;
+import java.awt.Dimension;
 
 public class Cube {
-    public int RADIUS = 80;
+    public int RADIUS = 65;
 
     public int x;
     public int y;
@@ -49,7 +49,6 @@ public class Cube {
         this.d = d;
         this.e = e;
         this.f = f;
-
     }
 
     @Override
@@ -121,9 +120,9 @@ public class Cube {
         return this.robber;
     }
 
-    public void set2dCoordinates() {
-        this.x2D = 400 - this.horizontalSpacing * this.x + this.horizontalSpacing * this.y;
-        this.y2D = 400 + this.verticalSpacing * (this.x + this.y);
+    public void set2dCoordinates(int screenWidth, int screenHeight) {
+        this.x2D = screenWidth / 2 - this.horizontalSpacing * this.x + this.horizontalSpacing * this.y;
+        this.y2D = screenHeight / 2 + this.verticalSpacing * (this.x + this.y);
     }
 
     public void drawHexagon(Graphics2D g2d, Color color) {
@@ -154,8 +153,11 @@ public class Cube {
     }
 
     public void drawNumber(Graphics2D g2d) {
-        g2d.setFont(new Font("Courier New", Font.PLAIN, 40));
+        g2d.setFont(new Font("Courier New", Font.BOLD, 40));
         g2d.setColor(new Color(26, 26, 26));
+        if (this.hasRedNumber()) {
+            g2d.setColor(new Color(185, 28, 26));
+        }
 
         g2d.drawString("" + (this.number != 0 ? this.number : ""), this.x2D - 20, this.y2D + 5);
     }

@@ -7,6 +7,8 @@ import java.util.Random;
 import java.util.Collection;
 import java.util.Collections;
 
+import java.awt.Dimension;
+
 public class HexGrid {
 
     private final Map<CubeCoordinate, Cube> map;
@@ -35,7 +37,9 @@ public class HexGrid {
 
     private final Random random = new Random();
 
-    HexGrid(int width, int height) throws Exception {
+    private Dimension screenSize;
+
+    HexGrid(int width, int height, Dimension screenSize) throws Exception {
         if (width < 5)
             throw new Exception("Board width must be bigger or equal to 5");
         if (width % 2 != 1)
@@ -45,6 +49,7 @@ public class HexGrid {
 
         this.map = new HashMap<>();
         this.width = width;
+        this.screenSize = screenSize;
 
         for (int x = -(width - 1) / 2; x <= (width - 1) / 2; x++) {
             for (int y = -(width - 1) / 2; y <= (width - 1) / 2; y++) {
@@ -67,7 +72,7 @@ public class HexGrid {
 
         for (Cube cube : map.values()) {
             this.setEdges(cube);
-            cube.set2dCoordinates();
+            cube.set2dCoordinates(this.getScreenWidth(), this.getScreenHeight());
         }
 
         for (Vertex vertex : vertices) {
@@ -320,6 +325,14 @@ public class HexGrid {
         List<Cube> cubeList = new ArrayList<>(map.values());
         int randomIndex = random.nextInt(cubeList.size());
         return cubeList.get(randomIndex);
+    }
+
+    public int getScreenWidth() {
+        return this.screenSize.width;
+    }
+
+    public int getScreenHeight() {
+        return this.screenSize.height;
     }
 
 }

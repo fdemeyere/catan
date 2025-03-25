@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.BasicStroke;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
@@ -36,11 +37,11 @@ public class Board extends JFrame implements MouseListener {
 
     public Board(HexGrid grid) {
         this.grid = grid;
-        this.setSize(850, 850);
+
+        this.setSize(grid.getScreenWidth(), grid.getScreenHeight());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(true);
         this.setLayout(null);
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         List<String> resources = this.getRandomResourceColorOrder();
         List<Integer> blackNumbers = this.getRandomBlackNumberOrder();
@@ -76,7 +77,7 @@ public class Board extends JFrame implements MouseListener {
 
                 for (Vertex vertex : grid.getVertices()) {
                     if (!vertex.isSettlement() && !vertex.isCity()) {
-                        vertex.highlightSettlementOption(g2d);
+                        // vertex.highlightSettlementOption(g2d);
                     } else if (vertex.isSettlement())
                         vertex.drawSettlement(g2d);
                     else if (vertex.isCity())
@@ -85,7 +86,7 @@ public class Board extends JFrame implements MouseListener {
             }
         };
 
-        boardPanel.setBounds(0, 0, 850, 850);
+        boardPanel.setBounds(0, 0, grid.getScreenWidth(), grid.getScreenHeight());
         boardPanel.addMouseListener(this);
         add(boardPanel);
         this.setVisible(true);
@@ -227,4 +228,5 @@ public class Board extends JFrame implements MouseListener {
                 return this.nothingColor;
         }
     }
+
 }
