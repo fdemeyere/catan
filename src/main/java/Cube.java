@@ -139,7 +139,7 @@ public class Cube {
 
         g2d.setColor(color);
         g2d.fillPolygon(xPoints, yPoints, 6);
-        g2d.setColor(Color.BLACK); // Set the color for the hexagon outline
+        g2d.setColor(new Color(252, 234, 192)); // Set the color for the hexagon outline
         g2d.drawPolygon(xPoints, yPoints, 6);
 
         // g2d.drawString(this.toString(), this.x2D - 20, this.y2D + 5);

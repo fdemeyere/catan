@@ -1,9 +1,9 @@
 import java.util.Objects;
 import java.awt.Graphics2D;
 import java.awt.Color;
-import javax.swing.JPanel;
+import java.awt.BasicStroke;
 
-public class Vertex extends JPanel {
+public class Vertex {
     private HexGrid grid;
 
     private CubeCoordinate[] neighborCubes = new CubeCoordinate[3];
@@ -145,15 +145,22 @@ public class Vertex extends JPanel {
         this.settlement = true;
     }
 
-    public void drawPossibleUpgrade(Graphics2D g2d) {
+    public void highlightSettlementOption(Graphics2D g2d) {
+        BasicStroke bs = new BasicStroke(1);
+        g2d.setStroke(bs);
         g2d.setColor(new Color(119, 205, 255, 128));
         g2d.fillOval(this.x2D - this.WIDTH / 2, this.y2D - this.WIDTH / 2, this.WIDTH / 2 * 2,
                 this.WIDTH / 2 * 2);
+        g2d.setColor(new Color(0, 0, 0, 128));
+
+        g2d.drawOval(this.x2D - this.WIDTH / 2, this.y2D - this.WIDTH / 2, this.WIDTH, this.WIDTH);
+
     }
 
     public void drawSettlement(Graphics2D g2d) {
         g2d.setColor(new Color(255, 0, 0));
         g2d.fillOval(this.x2D - this.WIDTH / 2, this.y2D - this.WIDTH / 2, this.WIDTH, this.WIDTH);
+
     }
 
     public void drawCity(Graphics2D g2d) {

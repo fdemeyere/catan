@@ -13,6 +13,7 @@ public class Main {
             System.out.println(e);
         }
         main.printSetupInfo();
+
     }
 
     public void printSetupInfo() {

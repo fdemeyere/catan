@@ -9,7 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.BasicStroke;
-
+import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
@@ -41,10 +41,11 @@ public class Board extends JFrame implements MouseListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(true);
         this.setLayout(null);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         List<String> resources = this.getRandomResourceColorOrder();
-        List<Integer> numbers = this.getRandomNumberOrder();
-        grid.assignResourcesAndNumbers(resources, numbers);
+        List<Integer> blackNumbers = this.getRandomBlackNumberOrder();
+        grid.assignResourcesAndNumbers(resources, blackNumbers);
 
         boardPanel = new JPanel() {
             @Override
@@ -54,6 +55,7 @@ public class Board extends JFrame implements MouseListener {
                 BasicStroke bs = new BasicStroke(7);
                 g2d.setStroke(bs);
                 g2d.setColor(new Color(26, 26, 26));
+                this.setBackground(new Color(0, 204, 255));
 
                 if (resources.size() < grid.getMap().size()) {
                     throw new IllegalStateException("Not enough resources for the number of cubes");
@@ -61,6 +63,7 @@ public class Board extends JFrame implements MouseListener {
 
                 for (Cube cube : grid.getMap().values()) {
                     Color color = getResourceColor(cube.getResource());
+
                     cube.drawHexagon(g2d, color);
                     cube.drawNumber(g2d);
                     cube.drawRobber(g2d); // Draw the robber if present
@@ -74,7 +77,7 @@ public class Board extends JFrame implements MouseListener {
 
                 for (Vertex vertex : grid.getVertices()) {
                     if (!vertex.isSettlement() && !vertex.isCity()) {
-                        // vertex.highlightSettlementOption(g2d);
+                        vertex.highlightSettlementOption(g2d);
                     } else if (vertex.isSettlement())
                         vertex.drawSettlement(g2d);
                     else if (vertex.isCity())
@@ -85,7 +88,6 @@ public class Board extends JFrame implements MouseListener {
         };
 
         boardPanel.setBounds(0, 0, 850, 850);
-        boardPanel.setBackground(Color.WHITE);
         boardPanel.addMouseListener(this);
         add(boardPanel);
         this.setVisible(true);
@@ -197,10 +199,24 @@ public class Board extends JFrame implements MouseListener {
         return resourceColors;
     }
 
-    private List<Integer> getRandomNumberOrder() {
+    // private List<Integer> getRandomNumberOrder() {
+    // List<Integer> numbers = new ArrayList<>();
+    // for (int i = 3; i <= 11; i++) {
+    // if (i == 7)
+    // continue;
+    // numbers.add(i);
+    // numbers.add(i);
+    // }
+    // numbers.add(2);
+    // numbers.add(12);
+    // Collections.shuffle(numbers);
+    // return numbers;
+    // }
+
+    private List<Integer> getRandomBlackNumberOrder() {
         List<Integer> numbers = new ArrayList<>();
         for (int i = 3; i <= 11; i++) {
-            if (i == 7)
+            if (i == 6 || i == 7 | i == 8)
                 continue;
             numbers.add(i);
             numbers.add(i);
@@ -227,5 +243,11 @@ public class Board extends JFrame implements MouseListener {
                 return this.nothingColor;
         }
     }
+
+    // private void highlightNeighbors(Cube cube, Color color) {
+    // if (grid.cubesAreNeighbors(grid.getCube(2, 0, -2), cube)) {
+    // color = new Color(100, 100, 100);
+    // }
+    // }
 
 }
