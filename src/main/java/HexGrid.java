@@ -2,6 +2,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Random;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -31,6 +32,8 @@ public class HexGrid {
     private List<Cube> oreCubes = new ArrayList<>();
 
     private Map<Integer, List<Cube>> numberToCubes = new HashMap<>();
+
+    private final Random random = new Random();
 
     HexGrid(int width, int height) throws Exception {
         if (width < 5)
@@ -232,23 +235,51 @@ public class HexGrid {
         return edges;
     }
 
-    public void assignResourcesAndNumbers(List<String> resources, List<Integer> numbers) {
+    public void assignResourcesAndNumbers(List<String> resources, List<Integer> blackNumbers) {
         int resourceIndex = 0;
         int numberIndex = 0;
 
+        this.assignRedNumbers();
         for (Cube cube : map.values()) {
             String resource = resources.get(resourceIndex);
             cube.setResource(resource);
             this.categorizeCubeByResource(cube);
 
-            if (!resource.equals("nothing")) {
-                cube.setNumber(numbers.get(numberIndex));
+            if (!resource.equals("nothing") && cube.getNumber() == 0) {
+                cube.setNumber(blackNumbers.get(numberIndex));
                 this.categorizeCubeByNumber(cube);
                 numberIndex++;
             }
 
             resourceIndex++;
         }
+    }
+
+    private void assignRedNumbers() {
+        List<Integer> redNumbers = new ArrayList<>();
+        List<Cube> redCubes = new ArrayList<>();
+        redNumbers.add(6);
+        redNumbers.add(6);
+        redNumbers.add(8);
+        redNumbers.add(8);
+
+        for (int i : redNumbers) {
+            Cube cube = this.getRandomCube();
+
+            while (cube.getNumber() != 0 || this.cubeHasNeighborInList(cube, redCubes)) {
+                cube = this.getRandomCube();
+            }
+            cube.setNumber(i);
+            redCubes.add(cube);
+        }
+    }
+
+    private boolean cubeHasNeighborInList(Cube cube, List<Cube> possibleNeighbors) {
+        for (Cube possibleNeighbor : possibleNeighbors) {
+            if (this.cubesAreNeighbors(cube, possibleNeighbor))
+                return true;
+        }
+        return false;
     }
 
     private void categorizeCubeByResource(Cube cube) {
@@ -275,6 +306,20 @@ public class HexGrid {
 
     public List<Cube> getCubesByNumber(int number) {
         return numberToCubes.getOrDefault(number, Collections.emptyList());
+    }
+
+    public boolean cubesAreNeighbors(Cube cube1, Cube cube2) {
+        CubeCoordinate offset = cube1.getCubeCoordinate().subtract(cube2.getCubeCoordinate());
+        return this.vectors.values().contains(offset);
+    }
+
+    private Cube getRandomCube() {
+        if (map.isEmpty()) {
+            return null;
+        }
+        List<Cube> cubeList = new ArrayList<>(map.values());
+        int randomIndex = random.nextInt(cubeList.size());
+        return cubeList.get(randomIndex);
     }
 
 }

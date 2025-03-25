@@ -19,8 +19,10 @@ public class CubeCoordinate {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
         CubeCoordinate that = (CubeCoordinate) obj;
         return x == that.x && y == that.y && z == that.z;
     }
@@ -32,5 +34,9 @@ public class CubeCoordinate {
 
     public CubeCoordinate add(CubeCoordinate coord) {
         return new CubeCoordinate(this.x + coord.x, this.y + coord.y, this.z + coord.z);
+    }
+
+    public CubeCoordinate subtract(CubeCoordinate coord) {
+        return new CubeCoordinate(this.x - coord.x, this.y - coord.y, this.z - coord.z);
     }
 }

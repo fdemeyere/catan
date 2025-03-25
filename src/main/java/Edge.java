@@ -27,16 +27,23 @@ public class Edge {
             BasicStroke bs = new BasicStroke(7);
             g2d.setStroke(bs);
             g2d.drawLine(a.getX2D(), a.getY2D(), b.getX2D(), b.getY2D());
+
         }
 
     }
 
     public void highlightRoadOption(Graphics2D g2d) {
         if (!this.road) {
+            BasicStroke bs = new BasicStroke(1);
+            g2d.setStroke(bs);
             this.x2D = (a.getX2D() + b.getX2D()) / 2;
             this.y2D = (a.getY2D() + b.getY2D()) / 2;
             g2d.setColor(new Color(119, 205, 255, 128));
             g2d.fillOval(this.x2D - this.optionalRoadWidth / 2, this.y2D - this.optionalRoadWidth / 2,
+                    this.optionalRoadWidth,
+                    this.optionalRoadWidth);
+            g2d.setColor(new Color(0, 0, 0, 128));
+            g2d.drawOval(this.x2D - this.optionalRoadWidth / 2, this.y2D - this.optionalRoadWidth / 2,
                     this.optionalRoadWidth,
                     this.optionalRoadWidth);
         }
