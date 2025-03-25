@@ -9,7 +9,6 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.BasicStroke;
-import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
@@ -83,7 +82,6 @@ public class Board extends JFrame implements MouseListener {
                     else if (vertex.isCity())
                         vertex.drawCity(g2d);
                 }
-
             }
         };
 
@@ -199,24 +197,10 @@ public class Board extends JFrame implements MouseListener {
         return resourceColors;
     }
 
-    // private List<Integer> getRandomNumberOrder() {
-    // List<Integer> numbers = new ArrayList<>();
-    // for (int i = 3; i <= 11; i++) {
-    // if (i == 7)
-    // continue;
-    // numbers.add(i);
-    // numbers.add(i);
-    // }
-    // numbers.add(2);
-    // numbers.add(12);
-    // Collections.shuffle(numbers);
-    // return numbers;
-    // }
-
     private List<Integer> getRandomBlackNumberOrder() {
         List<Integer> numbers = new ArrayList<>();
         for (int i = 3; i <= 11; i++) {
-            if (i == 6 || i == 7 | i == 8)
+            if (i == 6 || i == 7 || i == 8)
                 continue;
             numbers.add(i);
             numbers.add(i);
@@ -243,11 +227,4 @@ public class Board extends JFrame implements MouseListener {
                 return this.nothingColor;
         }
     }
-
-    // private void highlightNeighbors(Cube cube, Color color) {
-    // if (grid.cubesAreNeighbors(grid.getCube(2, 0, -2), cube)) {
-    // color = new Color(100, 100, 100);
-    // }
-    // }
-
 }

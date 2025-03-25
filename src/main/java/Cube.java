@@ -168,4 +168,8 @@ public class Cube {
         return this.number;
     }
 
+    public boolean hasRedNumber() {
+        return this.number == 6 || this.number == 8;
+    }
+
 }

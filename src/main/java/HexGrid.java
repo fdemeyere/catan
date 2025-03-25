@@ -245,7 +245,7 @@ public class HexGrid {
             cube.setResource(resource);
             this.categorizeCubeByResource(cube);
 
-            if (!resource.equals("nothing") && cube.getNumber() != 0) {
+            if (!resource.equals("nothing") && cube.getNumber() == 0) {
                 cube.setNumber(blackNumbers.get(numberIndex));
                 this.categorizeCubeByNumber(cube);
                 numberIndex++;
@@ -266,10 +266,11 @@ public class HexGrid {
         for (int i : redNumbers) {
             Cube cube = this.getRandomCube();
 
-            while (cube.getNumber() == 0 || this.cubeHasNeighborInList(cube, redCubes)) {
+            while (cube.getNumber() != 0 || this.cubeHasNeighborInList(cube, redCubes)) {
                 cube = this.getRandomCube();
             }
             cube.setNumber(i);
+            redCubes.add(cube);
         }
     }
 
