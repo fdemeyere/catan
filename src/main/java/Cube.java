@@ -1,6 +1,9 @@
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.BasicStroke;
+
+import java.awt.image.BufferedImage;
 
 import java.util.Arrays;
 
@@ -54,6 +57,7 @@ public class Cube {
         this.f = f;
 
         this.productionByPlayerID = new int[numberOfPlayers];
+
     }
 
     @Override
@@ -130,7 +134,7 @@ public class Cube {
         this.y2D = screenHeight / 2 + this.verticalSpacing * (this.x + this.y);
     }
 
-    public void drawHexagon(Graphics2D g2d, Color color) {
+    public void drawHexagon(Graphics2D g2d, Color color, BufferedImage resourceImage) {
         int[] xPoints = new int[6];
         int[] yPoints = new int[6];
 
@@ -143,10 +147,13 @@ public class Cube {
 
         g2d.setColor(color);
         g2d.fillPolygon(xPoints, yPoints, 6);
-        g2d.setColor(new Color(252, 234, 192)); // Set the color for the hexagon outline
-        g2d.drawPolygon(xPoints, yPoints, 6);
 
-        // g2d.drawString(this.toString(), this.x2D - 20, this.y2D + 5);
+        BasicStroke bs = new BasicStroke(7);
+        g2d.setStroke(bs);
+        g2d.setColor(new Color(252, 234, 192));
+        g2d.drawPolygon(xPoints, yPoints, 6);
+        g2d.drawImage(resourceImage, this.x2D - 20, this.y2D - this.RADIUS / 2, 30, 30, null);
+
     }
 
     public void setResource(String resource) {
@@ -165,7 +172,7 @@ public class Cube {
         }
 
         g2d.drawString("" + (this.number != 0 ? this.number : ""), this.x2D - 20,
-                this.y2D + 5);
+                this.y2D + 40);
 
     }
 
@@ -189,6 +196,10 @@ public class Cube {
         g2d.setFont(new Font("Courier New", Font.PLAIN, 12));
         g2d.setColor(new Color(26, 26, 26));
         g2d.drawString(Arrays.toString(this.productionByPlayerID), this.x2D - this.RADIUS / 2, this.y2D + 5);
+    }
+
+    public int[] getProduction() {
+        return this.productionByPlayerID;
     }
 
 }

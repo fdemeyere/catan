@@ -1,4 +1,5 @@
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 
@@ -12,6 +13,7 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.BasicStroke;
+import java.awt.image.BufferedImage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,8 @@ public class Board extends JFrame implements MouseListener {
 
     // Color test = new Color(rgb(61, 184, 54));
 
+    public JLabel label = new JLabel();
+
     public Board(HexGrid grid, GameState gameState) {
         this.grid = grid;
 
@@ -58,9 +62,7 @@ public class Board extends JFrame implements MouseListener {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g2d = (Graphics2D) g;
-                BasicStroke bs = new BasicStroke(7);
-                g2d.setStroke(bs);
-                g2d.setColor(new Color(26, 26, 26));
+
                 this.setBackground(new Color(0, 204, 255));
 
                 if (resources.size() < grid.getMap().size()) {
@@ -70,9 +72,13 @@ public class Board extends JFrame implements MouseListener {
                 for (Cube cube : grid.getMap().values()) {
                     Color color = getResourceColor(cube.getResource());
 
-                    cube.drawHexagon(g2d, color);
-                    // cube.drawNumber(g2d);
-                    cube.drawProduction(g2d);
+                    BufferedImage resourceImage = LoadImage.load(cube.getResource() + ".png");
+
+                    // boardPanel.add(imageLabel);
+                    // }
+                    cube.drawHexagon(g2d, color, resourceImage);
+                    cube.drawNumber(g2d);
+                    // cube.drawProduction(g2d);
                     cube.drawRobber(g2d); // Draw the robber if present
                 }
 
@@ -84,7 +90,7 @@ public class Board extends JFrame implements MouseListener {
 
                 for (Vertex vertex : grid.getVertices()) {
                     if (!vertex.isSettlement() && !vertex.isCity()) {
-                        vertex.highlightSettlementOption(g2d);
+                        // vertex.highlightSettlementOption(g2d);
                     } else if (vertex.isSettlement())
                         vertex.drawSettlement(g2d);
                     else if (vertex.isCity())
@@ -116,7 +122,12 @@ public class Board extends JFrame implements MouseListener {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                gameState.getCurrentPlayer().printResources();
                 gameState.switchTurn();
+
+                grid.giveResources(DoubleDice.DiceRoll().sum);
+                boardPanel.repaint();
+
             }
         });
         button.setBounds(x, y, width,
@@ -261,5 +272,22 @@ public class Board extends JFrame implements MouseListener {
                 return this.nothingColor;
         }
     }
+
+    // public String getResourceFileName(String resource) {
+    // switch (resource) {
+    // case "wool":
+    // return "wool.png";
+    // case "brick":
+    // return "brick.png";
+    // case "grain":
+    // return "grain.png";
+    // case "ore":
+    // return "ore.png";
+    // case "lumber":
+    // return "lumber.png";
+    // default:
+    // return "cactus.png";
+    // }
+    // }
 
 }
