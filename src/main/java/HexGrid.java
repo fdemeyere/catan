@@ -39,7 +39,7 @@ public class HexGrid {
 
     private Dimension screenSize;
 
-    HexGrid(int width, int height, Dimension screenSize) throws Exception {
+    HexGrid(int width, int height, Dimension screenSize, int numberOfPlayers) throws Exception {
         if (width < 5)
             throw new Exception("Board width must be bigger or equal to 5");
         if (width % 2 != 1)
@@ -56,7 +56,7 @@ public class HexGrid {
                 int z = -x - y;
 
                 if (Math.abs(z) <= (width - 1) / 2) {
-                    Cube newCube = new Cube(x, y, z, null, null, null, null, null, null);
+                    Cube newCube = new Cube(x, y, z, null, null, null, null, null, null, numberOfPlayers);
                     this.map.put(new CubeCoordinate(x, y, z), newCube);
                     this.setVertices(newCube);
 
@@ -226,6 +226,10 @@ public class HexGrid {
 
     public Cube getCube(int x, int y, int z) {
         return map.get(new CubeCoordinate(x, y, z));
+    }
+
+    public Cube getCube(CubeCoordinate cubeCoordinate) {
+        return map.get(cubeCoordinate);
     }
 
     public Map<CubeCoordinate, Cube> getMap() {

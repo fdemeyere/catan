@@ -12,18 +12,21 @@ public class Edge {
 
     private int optionalRoadWidth = 30;
 
+    private Player player;
+
     Edge(Vertex a, Vertex b) {
         this.a = a;
         this.b = b;
     }
 
-    public void placeRoad() {
+    public void placeRoad(Player player) {
         this.road = true;
+        this.player = player;
     }
 
     public void drawRoad(Graphics2D g2d) {
         if (this.road) {
-            g2d.setColor(new Color(255, 0, 0));
+            g2d.setColor(this.player.getColor());
             BasicStroke bs = new BasicStroke(7);
             g2d.setStroke(bs);
             g2d.drawLine(a.getX2D(), a.getY2D(), b.getX2D(), b.getY2D());
@@ -69,5 +72,9 @@ public class Edge {
     public void set2dCoordinates() {
         this.x2D = (a.getX2D() + b.getX2D()) / 2;
         this.y2D = (a.getY2D() + b.getY2D()) / 2;
+    }
+
+    public Player getPlayer() {
+        return this.player;
     }
 }

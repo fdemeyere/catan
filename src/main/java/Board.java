@@ -1,8 +1,11 @@
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JButton;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -16,15 +19,17 @@ import java.util.Collections;
 
 public class Board extends JFrame implements MouseListener {
 
-    HexGrid grid;
+    private HexGrid grid;
 
     private JPanel boardPanel;
 
-    Graphics2D g2d;
+    private Graphics2D g2d;
 
-    boolean robberToMove = false;
+    private boolean robberToMove = false;
 
-    Cube robberPlacement = null;
+    private Cube robberPlacement = null;
+
+    private GameState gameState;
 
     Color brickColor = new Color(208, 105, 56);
     Color woolColor = new Color(149, 179, 57);
@@ -35,13 +40,14 @@ public class Board extends JFrame implements MouseListener {
 
     // Color test = new Color(rgb(61, 184, 54));
 
-    public Board(HexGrid grid) {
+    public Board(HexGrid grid, GameState gameState) {
         this.grid = grid;
 
         this.setSize(grid.getScreenWidth(), grid.getScreenHeight());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(true);
         this.setLayout(null);
+        this.gameState = gameState;
 
         List<String> resources = this.getRandomResourceColorOrder();
         List<Integer> blackNumbers = this.getRandomBlackNumberOrder();
@@ -65,7 +71,8 @@ public class Board extends JFrame implements MouseListener {
                     Color color = getResourceColor(cube.getResource());
 
                     cube.drawHexagon(g2d, color);
-                    cube.drawNumber(g2d);
+                    // cube.drawNumber(g2d);
+                    cube.drawProduction(g2d);
                     cube.drawRobber(g2d); // Draw the robber if present
                 }
 
@@ -77,20 +84,44 @@ public class Board extends JFrame implements MouseListener {
 
                 for (Vertex vertex : grid.getVertices()) {
                     if (!vertex.isSettlement() && !vertex.isCity()) {
-                        // vertex.highlightSettlementOption(g2d);
+                        vertex.highlightSettlementOption(g2d);
                     } else if (vertex.isSettlement())
                         vertex.drawSettlement(g2d);
                     else if (vertex.isCity())
                         vertex.drawCity(g2d);
                 }
+
+                DoubleDice.drawResult(g2d);
             }
         };
 
         boardPanel.setBounds(0, 0, grid.getScreenWidth(), grid.getScreenHeight());
+        boardPanel.setLayout(null);
         boardPanel.addMouseListener(this);
         add(boardPanel);
+
+        JButton endTurnButton = this.createEndTurnButton();
+        boardPanel.add(endTurnButton);
         this.setVisible(true);
 
+    }
+
+    private JButton createEndTurnButton() {
+        int width = 100;
+        int height = 100;
+        int borderOffset = (int) Math.round(this.grid.getScreenHeight() * 0.1);
+        int x = (int) Math.round(this.grid.getScreenWidth() - width - borderOffset);
+        int y = (int) Math.round(this.grid.getScreenHeight() - height - borderOffset);
+        JButton button = new JButton("End turn");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameState.switchTurn();
+            }
+        });
+        button.setBounds(x, y, width,
+                height);
+        return button;
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -116,26 +147,30 @@ public class Board extends JFrame implements MouseListener {
 
                     boardPanel.repaint();
                 }
-
             }
             return;
         }
         Vertex clickedVertex = getClickedVertex(point.getX(), point.getY());
         if (clickedVertex != null) {
             if (!clickedVertex.isSettlement() && !clickedVertex.isCity()) {
-                clickedVertex.placeSettlement();
+                clickedVertex.placeSettlement(this.gameState.getCurrentPlayer());
                 boardPanel.repaint();
+                // this.gameState.switchTurn();
             } else if (clickedVertex.isSettlement()) {
-                clickedVertex.removeSettlement();
-                clickedVertex.placeCity();
-                boardPanel.repaint();
+                if (clickedVertex.getPlayer() == this.gameState.getCurrentPlayer()) {
+                    clickedVertex.removeSettlement();
+                    clickedVertex.placeCity(this.gameState.getCurrentPlayer());
+                    boardPanel.repaint();
+                    // this.gameState.switchTurn();
+                }
+
             }
             return;
         }
 
         Edge clickedEdge = getClickedEdge(point.getX(), point.getY());
         if (clickedEdge != null && !clickedEdge.hasRoad()) {
-            clickedEdge.placeRoad();
+            clickedEdge.placeRoad(this.gameState.getCurrentPlayer());
             boardPanel.repaint();
         }
 
@@ -163,7 +198,6 @@ public class Board extends JFrame implements MouseListener {
             if (Math.pow(x2d - vertex.getX2D(), 2)
                     + Math.pow(y2d - vertex.getY2D(), 2) <= Math
                             .pow(vertex.getWidth() / 2, 2)) {
-                System.out.println("True");
                 return vertex;
             }
         }
@@ -175,7 +209,6 @@ public class Board extends JFrame implements MouseListener {
             if (Math.pow(x2d - edge.getX2D(), 2)
                     + Math.pow(y2d - edge.getY2D(), 2) <= Math
                             .pow(edge.getOptionalRoadWidth() / 2, 2)) {
-                System.out.println("True");
                 return edge;
             }
         }

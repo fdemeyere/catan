@@ -17,6 +17,8 @@ public class Vertex {
     private int x2D;
     private int y2D;
 
+    private Player player;
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -141,10 +143,6 @@ public class Vertex {
         return this == grid.getVertexByNeighbor(this.getNeighbor(firstNeighborPosition), vertexIndexToCheck);
     }
 
-    public void upgrade() {
-        this.settlement = true;
-    }
-
     public void highlightSettlementOption(Graphics2D g2d) {
         BasicStroke bs = new BasicStroke(1);
         g2d.setStroke(bs);
@@ -158,13 +156,13 @@ public class Vertex {
     }
 
     public void drawSettlement(Graphics2D g2d) {
-        g2d.setColor(new Color(255, 0, 0));
+        g2d.setColor(this.player.getColor());
         g2d.fillOval(this.x2D - this.WIDTH / 2, this.y2D - this.WIDTH / 2, this.WIDTH, this.WIDTH);
 
     }
 
     public void drawCity(Graphics2D g2d) {
-        g2d.setColor(new Color(255, 0, 0));
+        g2d.setColor(this.player.getColor());
         g2d.fillRect(this.x2D - this.WIDTH / 2, this.y2D - this.WIDTH / 2, this.WIDTH, this.WIDTH);
     }
 
@@ -197,8 +195,10 @@ public class Vertex {
         return this.WIDTH;
     }
 
-    public void placeSettlement() {
+    public void placeSettlement(Player player) {
         this.settlement = true;
+        this.addProductionPointForNeighborCubes(player.getID());
+        this.player = player;
     }
 
     public void removeSettlement() {
@@ -209,8 +209,9 @@ public class Vertex {
         return this.settlement;
     }
 
-    public void placeCity() {
+    public void placeCity(Player player) {
         this.city = true;
+        this.addProductionPointForNeighborCubes(player.getID());
     }
 
     public void removeCity() {
@@ -220,4 +221,18 @@ public class Vertex {
     public boolean isCity() {
         return this.city;
     }
+
+    public void addProductionPointForNeighborCubes(int currentPlayerID) {
+        for (CubeCoordinate vector : this.neighborCubes) {
+            if (vector != null) {
+                Cube neighbor = this.grid.getCube(vector);
+                neighbor.increaseProductionByPlayerID(currentPlayerID);
+            }
+        }
+    }
+
+    public Player getPlayer() {
+        return this.player;
+    }
+
 }

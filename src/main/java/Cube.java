@@ -1,10 +1,11 @@
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Dimension;
+
+import java.util.Arrays;
 
 public class Cube {
-    public int RADIUS = 65;
+    public int RADIUS = 66;
 
     public int x;
     public int y;
@@ -27,6 +28,8 @@ public class Cube {
     public int x2D;
     public int y2D;
 
+    private int[] productionByPlayerID;
+
     // Distance between centers horizontally
     public int horizontalSpacing = (int) Math.round(this.RADIUS * Math.sqrt(3) / 2);
 
@@ -38,7 +41,7 @@ public class Cube {
     private int number;
     private String resource;
 
-    Cube(int x, int y, int z, Vertex a, Vertex b, Vertex c, Vertex d, Vertex e, Vertex f) {
+    Cube(int x, int y, int z, Vertex a, Vertex b, Vertex c, Vertex d, Vertex e, Vertex f, int numberOfPlayers) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -49,6 +52,8 @@ public class Cube {
         this.d = d;
         this.e = e;
         this.f = f;
+
+        this.productionByPlayerID = new int[numberOfPlayers];
     }
 
     @Override
@@ -159,7 +164,9 @@ public class Cube {
             g2d.setColor(new Color(185, 28, 26));
         }
 
-        g2d.drawString("" + (this.number != 0 ? this.number : ""), this.x2D - 20, this.y2D + 5);
+        g2d.drawString("" + (this.number != 0 ? this.number : ""), this.x2D - 20,
+                this.y2D + 5);
+
     }
 
     public void setNumber(int number) {
@@ -172,6 +179,16 @@ public class Cube {
 
     public boolean hasRedNumber() {
         return this.number == 6 || this.number == 8;
+    }
+
+    public void increaseProductionByPlayerID(int id) {
+        this.productionByPlayerID[id]++;
+    }
+
+    public void drawProduction(Graphics2D g2d) {
+        g2d.setFont(new Font("Courier New", Font.PLAIN, 12));
+        g2d.setColor(new Color(26, 26, 26));
+        g2d.drawString(Arrays.toString(this.productionByPlayerID), this.x2D - this.RADIUS / 2, this.y2D + 5);
     }
 
 }
