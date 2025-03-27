@@ -39,7 +39,9 @@ public class HexGrid {
 
     private Dimension screenSize;
 
-    HexGrid(int width, int height, Dimension screenSize, int numberOfPlayers) throws Exception {
+    private Player[] players;
+
+    HexGrid(int width, int height, Dimension screenSize, Player[] players) throws Exception {
         if (width < 5)
             throw new Exception("Board width must be bigger or equal to 5");
         if (width % 2 != 1)
@@ -50,13 +52,14 @@ public class HexGrid {
         this.map = new HashMap<>();
         this.width = width;
         this.screenSize = screenSize;
+        this.players = players;
 
         for (int x = -(width - 1) / 2; x <= (width - 1) / 2; x++) {
             for (int y = -(width - 1) / 2; y <= (width - 1) / 2; y++) {
                 int z = -x - y;
 
                 if (Math.abs(z) <= (width - 1) / 2) {
-                    Cube newCube = new Cube(x, y, z, null, null, null, null, null, null, numberOfPlayers);
+                    Cube newCube = new Cube(x, y, z, null, null, null, null, null, null, this.players.length);
                     this.map.put(new CubeCoordinate(x, y, z), newCube);
                     this.setVertices(newCube);
 
@@ -280,6 +283,7 @@ public class HexGrid {
             }
             cube.setNumber(i);
             redCubes.add(cube);
+            this.categorizeCubeByNumber(cube);
         }
     }
 
@@ -337,6 +341,19 @@ public class HexGrid {
 
     public int getScreenHeight() {
         return this.screenSize.height;
+    }
+
+    public void giveResources(int diceResult) {
+        for (Cube cube : this.numberToCubes.get(diceResult)) {
+            int[] productionByPlayerID = cube.getProduction();
+            String resource = cube.getResource();
+
+            for (int id = 0; id < productionByPlayerID.length; id++) {
+                int production = productionByPlayerID[id];
+                if (production != 0)
+                    this.players[id].addResource(resource, production);
+            }
+        }
     }
 
 }
