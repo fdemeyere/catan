@@ -249,7 +249,6 @@ public class HexGrid {
 
     public void assignResourcesAndNumbers(List<String> resources, List<Integer> blackNumbers) {
         int resourceIndex = 0;
-        int numberIndex = 0;
 
         this.assignRedNumbers();
         for (Cube cube : map.values()) {
@@ -257,14 +256,26 @@ public class HexGrid {
             cube.setResource(resource);
             this.categorizeCubeByResource(cube);
 
-            if (!resource.equals("nothing") && cube.getNumber() == 0) {
-                cube.setNumber(blackNumbers.get(numberIndex));
-                this.categorizeCubeByNumber(cube);
-                numberIndex++;
+            if (this.shouldAssignBlackNumber(cube, resource)) {
+                this.assignBlackNumberToCube(cube, blackNumbers);
             }
 
             resourceIndex++;
         }
+    }
+
+    private boolean shouldAssignBlackNumber(Cube cube, String resource) {
+        return !resource.equals("nothing") && cube.getNumber() == 0;
+    }
+
+    private void assignBlackNumberToCube(Cube cube, List<Integer> blackNumbers) {
+        while (cubeHasNeighborWithSameNumber(cube, blackNumbers.get(blackNumbers.size() - 1))) {
+            Collections.shuffle(blackNumbers);
+        }
+
+        int number = blackNumbers.remove(blackNumbers.size() - 1);
+        cube.setNumber(number);
+        this.categorizeCubeByNumber(cube);
     }
 
     private void assignRedNumbers() {
@@ -291,6 +302,16 @@ public class HexGrid {
         for (Cube possibleNeighbor : possibleNeighbors) {
             if (this.cubesAreNeighbors(cube, possibleNeighbor))
                 return true;
+        }
+        return false;
+    }
+
+    private boolean cubeHasNeighborWithSameNumber(Cube cube, int number) {
+        for (CubeCoordinate vector : this.vectors.values()) {
+            Cube possibleNeighbor = this.getCube(vector.add(cube.getCubeCoordinate()));
+            if (possibleNeighbor != null)
+                if (possibleNeighbor.getNumber() == number)
+                    return true;
         }
         return false;
     }
