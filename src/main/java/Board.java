@@ -1,23 +1,16 @@
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.awt.RenderingHints;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Point;
-import java.awt.BasicStroke;
 import java.awt.image.BufferedImage;
-import java.awt.Image;
 import java.awt.Font;
 
 import java.util.ArrayList;
@@ -76,6 +69,17 @@ public class Board extends JFrame implements MouseListener {
     public boolean mustPlaceRoad = false;
 
     private BufferedImage boardCache;
+
+    private SettlementPlacedListener settlementPlacedListener;
+    private RoadPlacedListener roadPlacedListener;
+
+    public interface SettlementPlacedListener {
+        void onSettlementPlaced();
+    }
+
+    public interface RoadPlacedListener {
+        void onRoadPlaced();
+    }
 
     public Board(HexGrid grid, GameState gameState) {
         this.grid = grid;
@@ -298,7 +302,7 @@ public class Board extends JFrame implements MouseListener {
                         this.grid.withdrawResourcesSettlement(currentPlayer);
                     }
                     clickedVertex.placeSettlement(currentPlayer);
-                    this.mustPlaceSettlement = false;
+                    notifySettlementPlaced();
                     this.gameState.getCurrentPlayer().settlements.add(clickedVertex);
                     this.toggleSettlementButton();
                 } else {
@@ -340,7 +344,7 @@ public class Board extends JFrame implements MouseListener {
                     }
                     clickedEdge.placeRoad(currentPlayer);
                     currentPlayer.addRoad(clickedEdge);
-                    this.mustPlaceRoad = false;
+                    notifyRoadPlaced();
                     this.toggleRoadButton();
                 }
 
@@ -505,6 +509,28 @@ public class Board extends JFrame implements MouseListener {
     private void drawGameFeedback(Graphics g2d) {
         g2d.setColor(Color.BLACK);
         g2d.drawString(this.gameFeedback, 300, 40);
+    }
+
+    public void setSettlementPlacedListener(SettlementPlacedListener listener) {
+        this.settlementPlacedListener = listener;
+    }
+
+    public void setRoadPlacedListener(RoadPlacedListener listener) {
+        this.roadPlacedListener = listener;
+    }
+
+    public void notifySettlementPlaced() {
+        this.mustPlaceSettlement = false;
+        if (settlementPlacedListener != null) {
+            settlementPlacedListener.onSettlementPlaced();
+        }
+    }
+
+    public void notifyRoadPlaced() {
+        this.mustPlaceRoad = false;
+        if (roadPlacedListener != null) {
+            roadPlacedListener.onRoadPlaced();
+        }
     }
 
 }
